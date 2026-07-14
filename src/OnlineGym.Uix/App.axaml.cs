@@ -6,7 +6,7 @@ using OnlineGym.Uix.Views;
 
 namespace OnlineGym.Uix;
 
-public partial class App : Application
+public partial class App : Avalonia.Application
 {
     public override void Initialize()
     {
