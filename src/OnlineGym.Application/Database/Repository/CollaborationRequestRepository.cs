@@ -83,5 +83,32 @@ VALUES
          return requests;
      }
      
+     public List<CollaborationRequest> GetByTrainerIdAndStatus(
+         long trainerId,
+         RequestStatus status)
+     {
+         List<CollaborationRequest> requests = new();
+
+         using IDbConnection connection = PostgresConnection.CreateConnection();
+         IDbCommand command = connection.CreateCommand();
+
+         command.CommandText = @"
+        SELECT *
+        FROM collaboration_requests
+        WHERE trainer_id = @trainer_id
+          AND status = @status::request_status_enum;";
+
+         DataBaseHelper.AddParameter(command, "@trainer_id", trainerId);
+         DataBaseHelper.AddParameter(command, "@status", status.ToString().ToUpper());
+
+         using IDataReader reader = command.ExecuteReader();
+
+         while (reader.Read())
+         {
+             requests.Add(MapFromReader(reader));
+         }
+
+         return requests;
+     }
      
  }
