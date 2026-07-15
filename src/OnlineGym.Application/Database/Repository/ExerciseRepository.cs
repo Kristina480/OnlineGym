@@ -1,9 +1,10 @@
 using System.Data;
 using OnlineGym.Application.Domain;
+using OnlineGym.Application.Interfaces.Repositories;
 
 namespace OnlineGym.Application.Database.Repositories;
 
-public class ExerciseRepository
+public class ExerciseRepository:IExerciseRepository
 {
      public long Insert(Exercise exercise)
     {
