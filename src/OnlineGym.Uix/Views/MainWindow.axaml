@@ -5,9 +5,30 @@
         Height="450"
         Title="OnlineGym">
 
-    <TextBlock Text="OnlineGym"
-               HorizontalAlignment="Center"
-               VerticalAlignment="Center"
-               FontSize="28" />
+    <StackPanel Margin="20"
+                Spacing="20"
+                VerticalAlignment="Center"
+                HorizontalAlignment="Center">
+
+        <TextBlock Text="Welcome"
+                   FontSize="28"
+                   FontWeight="Bold"
+                   HorizontalAlignment="Center" />
+
+        <Button Content="Login"
+                Width="140"
+                HorizontalAlignment="Center"
+                HorizontalContentAlignment="Center"
+                VerticalContentAlignment="Center"
+                Click="OnLoginClick" />
+
+        <Button Content="Register"
+                Width="140"
+                HorizontalAlignment="Center"
+                HorizontalContentAlignment="Center"
+                VerticalContentAlignment="Center"
+                Click="OnRegisterClick" />
+
+    </StackPanel>
 
 </Window>
