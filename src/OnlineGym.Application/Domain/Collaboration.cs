@@ -14,7 +14,7 @@ public class Collaboration
 
     public long PricingPackageId { get; set; }
 
-    public DateTime StartDate { get; private set; }
+    public DateTime StartDate { get;  set; }
 
     public DateTime? EndDate { get; set; }
 
