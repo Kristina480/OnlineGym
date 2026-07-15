@@ -1,10 +1,11 @@
 using System.Data;
 using OnlineGym.Application.Domain;
 using OnlineGym.Application.Domain.Enums;
+using OnlineGym.Application.Interfaces.Repositories;
 
 namespace OnlineGym.Application.Database.Repositories;
 
-public class CollaborationRepository
+public class CollaborationRepository: ICollaborationRepository
 {
     public long Insert(Collaboration collaboration)
     {
