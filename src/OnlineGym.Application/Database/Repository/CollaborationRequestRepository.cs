@@ -59,4 +59,29 @@ VALUES
                  true)
          );
      }
+     public List<CollaborationRequest> GetByTrainerId(long trainerId)
+     {
+         List<CollaborationRequest> requests = new();
+
+         using IDbConnection connection = PostgresConnection.CreateConnection();
+         IDbCommand command = connection.CreateCommand();
+
+         command.CommandText = @"
+        SELECT *
+        FROM collaboration_requests
+        WHERE trainer_id = @trainer_id;";
+
+         DataBaseHelper.AddParameter(command, "@trainer_id", trainerId);
+
+         using IDataReader reader = command.ExecuteReader();
+
+         while (reader.Read())
+         {
+             requests.Add(MapFromReader(reader));
+         }
+
+         return requests;
+     }
+     
+     
  }
