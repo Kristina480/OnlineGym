@@ -6,7 +6,7 @@ namespace OnlineGym.Application.Database.Repositories;
 
 public class CollaborationRepository
 {
-    public long Create(Collaboration collaboration)
+    public long Insert(Collaboration collaboration)
     {
         using IDbConnection connection = PostgresConnection.CreateConnection();
         IDbCommand command = connection.CreateCommand();
