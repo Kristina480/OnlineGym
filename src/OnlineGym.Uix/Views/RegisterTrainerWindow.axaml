@@ -1,0 +1,49 @@
+﻿<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        x:Class="OnlineGym.Uix.Views.RegisterTrainerWindow"
+        Width="450"
+        Height="650"
+        Title="Trainer Registration">
+
+    <ScrollViewer>
+
+        <StackPanel Margin="20" Spacing="10">
+
+            <TextBlock Text="Trainer Registration"
+                       FontSize="24"
+                       HorizontalAlignment="Center"/>
+
+            <TextBox Name="FirstNameBox"
+                     Watermark="First name"/>
+
+            <TextBox Name="LastNameBox"
+                     Watermark="Last name"/>
+
+            <TextBox Name="UsernameBox"
+                     Watermark="Username"/>
+
+            <TextBox Name="PasswordBox"
+                     Watermark="Password"
+                     PasswordChar="*"/>
+
+            <TextBox Name="SpecializationBox"
+                     Watermark="Specialization (optional)"/>
+
+            <TextBox Name="EducationBox"
+                     Watermark="Education (optional)"/>
+
+            <TextBox Name="RecommendationsBox"
+                     Watermark="Recommendations (optional)"/>
+
+            <Button Content="Register"
+                    HorizontalAlignment="Center"
+                    Click="OnRegisterClick"/>
+
+            <TextBlock Name="ErrorText"
+                       Foreground="Red"/>
+
+        </StackPanel>
+
+    </ScrollViewer>
+
+</Window>

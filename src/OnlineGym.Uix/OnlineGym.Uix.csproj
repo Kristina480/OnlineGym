@@ -31,4 +31,10 @@
   <ItemGroup>
     <ProjectReference Include="..\OnlineGym.Application\OnlineGym.Application.csproj" />
   </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Views\RegisterClientWindow.axaml.cs">
+      <DependentUpon>RegisterClientWindow.axaml</DependentUpon>
+    </Compile>
+  </ItemGroup>
 </Project>

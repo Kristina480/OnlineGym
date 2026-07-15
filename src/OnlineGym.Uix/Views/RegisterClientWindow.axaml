@@ -1,0 +1,55 @@
+﻿<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        x:Class="OnlineGym.Uix.Views.RegisterClientWindow"
+        Width="450"
+        Height="650"
+        Title="Client Registration">
+
+    <ScrollViewer>
+
+        <StackPanel Margin="20" Spacing="10">
+
+            <TextBlock Text="Client Registration"
+                       FontSize="24"
+                       HorizontalAlignment="Center"/>
+
+            <TextBox Name="FirstNameBox"
+                     Watermark="First name"/>
+
+            <TextBox Name="LastNameBox"
+                     Watermark="Last name"/>
+
+            <TextBox Name="UsernameBox"
+                     Watermark="Username"/>
+
+            <TextBox Name="PasswordBox"
+                     Watermark="Password"
+                     PasswordChar="*"/>
+
+            <TextBox Name="HeightBox"
+                     Watermark="Height (cm)"/>
+
+            <TextBox Name="WeightBox"
+                     Watermark="Weight (kg)"/>
+
+            <TextBox Name="GoalBox"
+                     Watermark="Goal"/>
+
+            <TextBox Name="HealthIssuesBox"
+                     Watermark="Health issues"/>
+
+            <TextBox Name="WorkoutsPerWeekBox"
+                     Watermark="Workouts per week"/>
+
+            <Button Content="Register"
+                    HorizontalAlignment="Center"
+                    Click="OnRegisterClick"/>
+
+            <TextBlock Name="ErrorText"
+                       Foreground="Red"/>
+
+        </StackPanel>
+
+    </ScrollViewer>
+
+</Window>
