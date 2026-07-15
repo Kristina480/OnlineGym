@@ -15,7 +15,7 @@ public interface ICollaborationRequestRepository
         long trainerId,
         RequestStatus status);
 
-    bool ExistsPendingRequest(long clientId, long trainerId);
+    bool HasPendingRequest(long clientId, long trainerId);
 
     void Update(CollaborationRequest request);
 }

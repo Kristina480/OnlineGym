@@ -4,7 +4,7 @@ namespace OnlineGym.Application.Interfaces.Repositories;
 
 public interface ICollaborationRepository
 {
-    long Create(Collaboration collaboration);
+    long Insert(Collaboration collaboration);
 
     Collaboration? GetById(long id);
 
