@@ -129,5 +129,27 @@ VALUES
 
          return count > 0;
      }
+     public void Update(CollaborationRequest request)
+     {
+         using IDbConnection connection = PostgresConnection.CreateConnection();
+         IDbCommand command = connection.CreateCommand();
+
+         command.CommandText = @"
+        UPDATE collaboration_requests
+        SET
+            client_id = @client_id,
+            trainer_id = @trainer_id,
+            request_date = @request_date,
+            status = @status::request_status_enum
+        WHERE request_id = @request_id;";
+
+         DataBaseHelper.AddParameter(command, "@request_id", request.Id);
+         DataBaseHelper.AddParameter(command, "@client_id", request.ClientId);
+         DataBaseHelper.AddParameter(command, "@trainer_id", request.TrainerId);
+         DataBaseHelper.AddParameter(command, "@request_date", request.RequestDate);
+         DataBaseHelper.AddParameter(command, "@status", request.Status.ToString().ToUpper());
+
+         command.ExecuteNonQuery();
+     }
      
  }
