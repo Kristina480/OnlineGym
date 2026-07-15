@@ -1,7 +1,9 @@
 ﻿using System.Data;
+using OnlineGym.Application.Interfaces.Repositories;
+
 namespace OnlineGym.Application.Database.Repositories;
 
-public class ClientRepository
+public class ClientRepository:IClientRepository
 {
      public bool UsernameExists(string username)
     {
