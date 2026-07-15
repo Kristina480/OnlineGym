@@ -110,5 +110,24 @@ VALUES
 
          return requests;
      }
+     public bool HasPendingRequest(long clientId, long trainerId)
+     {
+         using IDbConnection connection = PostgresConnection.CreateConnection();
+         IDbCommand command = connection.CreateCommand();
+
+         command.CommandText = @"
+        SELECT COUNT(*)
+        FROM collaboration_requests
+        WHERE client_id = @client_id
+          AND trainer_id = @trainer_id
+          AND status = 'PENDING'::request_status_enum;";
+
+         DataBaseHelper.AddParameter(command, "@client_id", clientId);
+         DataBaseHelper.AddParameter(command, "@trainer_id", trainerId);
+
+         long count = (long)command.ExecuteScalar();
+
+         return count > 0;
+     }
      
  }
