@@ -119,6 +119,16 @@ public class TrainerRepository
         }
         return result.ToString();
     }
+    public bool DeleteTrainer(long trainerId)
+    {
+        using IDbConnection connection = PostgresConnection.CreateConnection();
+        IDbCommand command = connection.CreateCommand();
+        command.CommandText = "DELETE FROM trainers WHERE trainer_id = @trainer_id";
+        AddParameter(command, "trainer_id", trainerId);
+    
+        int result = command.ExecuteNonQuery();
+        return result > 0;
+    }
 
     private void AddParameter(IDbCommand command, string paramName, object value)
     {
