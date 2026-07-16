@@ -17,6 +17,11 @@
                     Height="50"
                     Click="OnUpdateProfileClick"
                     FontSize="16"/>
+			<Button Content="Moji treninzi"
+        			Width="250"
+        			Height="50"
+        			Click="OnWorkoutsClick"
+        			FontSize="16"/>
             <Button Content="Odjava"
                     Width="250"
                     Height="50"
