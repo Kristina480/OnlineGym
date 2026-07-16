@@ -1,4 +1,5 @@
 ﻿using System.Data;
+using OnlineGym.Application.Domain;
 using OnlineGym.Application.Interfaces.Repositories;
 
 namespace OnlineGym.Application.Database.Repositories;
@@ -72,5 +73,53 @@ public class TrainerRepository:ITrainerRepository
         parameter.ParameterName = "@" + paramName;
         parameter.Value = value;
         command.Parameters.Add(parameter);
+    }
+    
+    public Trainer? GetById(long id)
+    {
+        using IDbConnection connection = PostgresConnection.CreateConnection();
+        IDbCommand command = connection.CreateCommand();
+
+        command.CommandText = @"
+        SELECT trainer_id,
+               account_id,
+               first_name,
+               last_name,
+               specialization,
+               average_rating,
+               education,
+               recommendations
+        FROM trainers
+        WHERE trainer_id = @trainer_id;";
+
+        AddParameter(command, "trainer_id", id);
+
+        using IDataReader reader = command.ExecuteReader();
+
+        return reader.Read() ? MapFromReader(reader) : null;
+    }
+    private Trainer MapFromReader(IDataReader reader)
+    {
+        int specializationIndex = reader.GetOrdinal("specialization");
+        int educationIndex = reader.GetOrdinal("education");
+        int recommendationsIndex = reader.GetOrdinal("recommendations");
+
+        return new Trainer(
+            reader.GetInt64(reader.GetOrdinal("trainer_id")),
+            reader.GetInt64(reader.GetOrdinal("account_id")),
+            reader.GetString(reader.GetOrdinal("first_name")),
+            reader.GetString(reader.GetOrdinal("last_name")),
+            reader.IsDBNull(specializationIndex)
+                ? null
+                : reader.GetString(specializationIndex),
+            Convert.ToDouble(
+                reader.GetDecimal(reader.GetOrdinal("average_rating"))),
+            reader.IsDBNull(educationIndex)
+                ? null
+                : reader.GetString(educationIndex),
+            reader.IsDBNull(recommendationsIndex)
+                ? null
+                : reader.GetString(recommendationsIndex)
+        );
     }
 }

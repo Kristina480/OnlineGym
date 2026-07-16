@@ -1,3 +1,5 @@
+using OnlineGym.Application.Domain;
+
 namespace OnlineGym.Application.Interfaces.Repositories;
 
 public interface ITrainerRepository
@@ -12,5 +14,6 @@ public interface ITrainerRepository
 
     public void RegisterTrainer(string username, string password, string firstName, string lastName,
         string? specialization, string? education, string? recommendations);
+    Trainer? GetById(long id);
     
 }
