@@ -34,6 +34,25 @@ public class RatingRepository : IRatingRepository
         return Convert.ToInt64(result);
     }
 
+    public Rating? GetByClientAndTrainer(long clientId, long trainerId)
+    {
+        using IDbConnection connection = PostgresConnection.CreateConnection();
+        IDbCommand command = connection.CreateCommand();
+
+        command.CommandText = @"
+        SELECT rating_id, client_id, trainer_id, rating, comment, rating_date
+        FROM ratings
+        WHERE client_id = @client_id AND trainer_id = @trainer_id
+        LIMIT 1;";
+
+        DataBaseHelper.AddParameter(command, "@client_id", clientId);
+        DataBaseHelper.AddParameter(command, "@trainer_id", trainerId);
+
+        using IDataReader reader = command.ExecuteReader();
+
+        return reader.Read() ? MapFromReader(reader) : null;
+    }
+
     public void UpdateTrainerAverageRating(long trainerId)
     {
         using IDbConnection connection = PostgresConnection.CreateConnection();
@@ -51,5 +70,17 @@ public class RatingRepository : IRatingRepository
         DataBaseHelper.AddParameter(command, "@trainer_id", trainerId);
 
         command.ExecuteNonQuery();
+    }
+
+    private Rating MapFromReader(IDataReader reader)
+    {
+        return new Rating(
+            reader.GetInt64(reader.GetOrdinal("rating_id")),
+            reader.GetInt64(reader.GetOrdinal("client_id")),
+            reader.GetInt64(reader.GetOrdinal("trainer_id")),
+            reader.GetInt32(reader.GetOrdinal("rating")),
+            reader.IsDBNull(reader.GetOrdinal("comment")) ? null : reader.GetString(reader.GetOrdinal("comment")),
+            reader.GetDateTime(reader.GetOrdinal("rating_date"))
+        );
     }
 }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.Markup.Xaml;
+using Avalonia.Media;
 using OnlineGym.Application.Database.Repositories;
 using OnlineGym.Application.Domain;
 using OnlineGym.Application.Domain.Enums;
@@ -98,15 +99,24 @@ public partial class ClientWorkoutsWindow : Window
             return;
         }
 
-        selectedWorkout.WorkoutRating = rating;
-        selectedWorkout.Comment = workoutCommentBox.Text;
-        selectedWorkout.IsCompleted = true;
-        selectedWorkout.Status = WorkoutStatus.Completed;
+        try
+        {
+            selectedWorkout.WorkoutRating = rating;
+            selectedWorkout.Comment = workoutCommentBox.Text;
+            selectedWorkout.IsCompleted = true;
+            selectedWorkout.Status = WorkoutStatus.Completed;
 
-        workoutRepository.Update(selectedWorkout);
+            workoutRepository.Update(selectedWorkout);
 
-        messageText.Text = "Ocena treninga je sacuvana.";
-        LoadWorkouts();
+            messageText.Text = "✓ Ocena treninga je sacuvana.";
+            messageText.Foreground = new SolidColorBrush(Colors.DarkGreen);
+            LoadWorkouts();
+        }
+        catch (Exception ex)
+        {
+            messageText.Text = $"Greška pri čuvanju ocene: {ex.Message}";
+            messageText.Foreground = new SolidColorBrush(Colors.DarkRed);
+        }
     }
 
     private void OnSaveTrainerRatingClick(object? sender, RoutedEventArgs e)
@@ -116,6 +126,7 @@ public partial class ClientWorkoutsWindow : Window
         if (selectedWorkout == null)
         {
             messageText.Text = "Izaberite trening.";
+            messageText.Foreground = new SolidColorBrush(Colors.DarkRed);
             return;
         }
 
@@ -125,29 +136,50 @@ public partial class ClientWorkoutsWindow : Window
         if (!int.TryParse(trainerRatingBox.Text, out int ratingValue) || ratingValue < 1 || ratingValue > 5)
         {
             messageText.Text = "Ocena trenera mora biti broj od 1 do 5.";
+            messageText.Foreground = new SolidColorBrush(Colors.DarkRed);
             return;
         }
 
-        Collaboration? collaboration = collaborationRepository.GetById(selectedWorkout.CollaborationId);
-
-        if (collaboration == null)
+        try
         {
-            messageText.Text = "Saradnja za izabrani trening nije pronadjena.";
-            return;
+            Collaboration? collaboration = collaborationRepository.GetById(selectedWorkout.CollaborationId);
+
+            if (collaboration == null)
+            {
+                messageText.Text = "Saradnja za izabrani trening nije pronadjena.";
+                messageText.Foreground = new SolidColorBrush(Colors.DarkRed);
+                return;
+            }
+
+            // PROVERA: Da li je klijent već ocenio ovog trenera
+            Rating? existingRating = ratingRepository.GetByClientAndTrainer(client.ClientId, collaboration.TrainerId);
+            
+            if (existingRating != null)
+            {
+                messageText.Text = "⚠ Već ste ocenili ovog trenera. Samo jedna ocena po treneru je dozvoljena.";
+                messageText.Foreground = new SolidColorBrush(Colors.DarkOrange);
+                return;
+            }
+
+            Rating rating = new Rating(
+                0,
+                client.ClientId,
+                collaboration.TrainerId,
+                ratingValue,
+                trainerCommentBox.Text,
+                DateTime.Today
+            );
+
+            ratingRepository.Insert(rating);
+
+            messageText.Text = "✓ Ocena trenera je sacuvana.";
+            messageText.Foreground = new SolidColorBrush(Colors.DarkGreen);
         }
-
-        Rating rating = new Rating(
-            0,
-            client.ClientId,
-            collaboration.TrainerId,
-            ratingValue,
-            trainerCommentBox.Text,
-            DateTime.Today
-        );
-
-        ratingRepository.Insert(rating);
-
-        messageText.Text = "Ocena trenera je sacuvana.";
+        catch (Exception ex)
+        {
+            messageText.Text = $"Greška pri čuvanju ocene: {ex.Message}";
+            messageText.Foreground = new SolidColorBrush(Colors.DarkRed);
+        }
     }
 }
 

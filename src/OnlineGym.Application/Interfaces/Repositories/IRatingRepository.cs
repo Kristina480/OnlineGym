@@ -6,5 +6,7 @@ public interface IRatingRepository
 {
     long Insert(Rating rating);
 
+    Rating? GetByClientAndTrainer(long clientId, long trainerId);
+
     void UpdateTrainerAverageRating(long trainerId);
 }
