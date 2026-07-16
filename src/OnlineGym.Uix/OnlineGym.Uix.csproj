@@ -36,5 +36,8 @@
     <Compile Update="Views\RegisterClientWindow.axaml.cs">
       <DependentUpon>RegisterClientWindow.axaml</DependentUpon>
     </Compile>
+    <Compile Update="Views\UpdateClientWindow.axaml.cs">
+      <DependentUpon>UpdateClientWindow.axaml</DependentUpon>
+    </Compile>
   </ItemGroup>
 </Project>

@@ -44,10 +44,10 @@
                        HorizontalAlignment="Center"/>
 
             <TextBox Name="LicenseNameBox"
-                     Watermark="License name (e.g. Personal Trainer Certificate)"/>
+                     Watermark="License name"/>
 
             <TextBox Name="DocumentTypeBox"
-                     Watermark="Document type (e.g. Certificate, Diploma)"/>
+                     Watermark="Document type"/>
             
             <DatePicker Name="IssueDatePicker"
                         Width="200"

@@ -5,6 +5,7 @@ using OnlineGym.Application.Database.Repositories;
 namespace OnlineGym.Uix.Views;
 public partial class LoginWindow : Window
 {
+    public long? accountId;
     public LoginWindow()
     {
         InitializeComponent();
@@ -32,7 +33,7 @@ public partial class LoginWindow : Window
         }
 
         UserAccountRepository repo = new UserAccountRepository();
-        long? accountId = repo.GetIdByCredentials(username, password);
+        accountId = repo.GetIdByCredentials(username, password);
         if(accountId == null)
         {
             errorText.Text = "Pogresan username ili lozinka.";
@@ -49,8 +50,8 @@ public partial class LoginWindow : Window
         }
         else if(userType == "CLIENT")
         {
-            //ClientWindow clientWindow = new ClientWindow();
-            //clientWindow.Show();
+            ClientWindow clientWindow = new ClientWindow(accountId.Value);
+            clientWindow.Show();
             this.Hide();
         }
         else if(userType == "ADMIN")
