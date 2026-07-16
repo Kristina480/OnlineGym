@@ -2,6 +2,7 @@
 using Avalonia.Interactivity;
 using Avalonia.Markup.Xaml;
 using OnlineGym.Application.Database.Repositories;
+using OnlineGym.Application.Domain;
 namespace OnlineGym.Uix.Views;
 public partial class LoginWindow : Window
 {
@@ -43,10 +44,19 @@ public partial class LoginWindow : Window
         string? userType = repo.GetUserTypeById(accountId.Value);
         if(userType == "TRAINER")
         {
-            //ovde treba da se doda provera da li je zahtev za registraciju prihvacen
-            //TrainerWindow trainerWindow = new TrainerWindow();
-            //trainerWindow.Show();
-            this.Hide();
+            TrainerRepository trainerRepo = new TrainerRepository();
+            Trainer? trainer=trainerRepo.GetTrainerByAccountId(accountId.Value);
+            string? status=trainerRepo.GetRegistrationStatus(trainer.TrainerId);
+            if (status == "APPROVED")
+            {
+                TrainerWindow trainerWindow = new TrainerWindow(accountId.Value);
+                trainerWindow.Show();
+                this.Hide();
+            }
+            else
+            {
+                errorText.Text = "Nije vam odobren zahtev za registraciju.";
+            }
         }
         else if(userType == "CLIENT")
         {
