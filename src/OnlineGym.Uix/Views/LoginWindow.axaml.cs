@@ -25,8 +25,7 @@ public partial class LoginWindow : Window
         string? username = usernameBox?.Text;
         string? password = passwordBox?.Text;
         
-        if (string.IsNullOrWhiteSpace(username) ||
-            string.IsNullOrWhiteSpace(password))
+        if (string.IsNullOrWhiteSpace(username) || string.IsNullOrWhiteSpace(password))
         {
             errorText.Text = "Popunite sva polja.";
             return;
@@ -43,6 +42,7 @@ public partial class LoginWindow : Window
         string? userType = repo.GetUserTypeById(accountId.Value);
         if(userType == "TRAINER")
         {
+            //ovde treba da se doda provera da li je zahtev za registraciju prihvacen
             //TrainerWindow trainerWindow = new TrainerWindow();
             //trainerWindow.Show();
             this.Hide();

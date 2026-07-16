@@ -63,6 +63,20 @@ public class TrainerRepository
         long trainerId = SaveTrainer(accountId, firstName, lastName, specialization, education, recommendations);
         CreateRegistrationRequest(trainerId);
     }
+    public void SaveLicense(long trainerId, string name, string documentType, DateTime issueDate)
+    {
+        using IDbConnection connection = PostgresConnection.CreateConnection();
+        IDbCommand command = connection.CreateCommand();
+        command.CommandText = "INSERT INTO licenses(trainer_id, name, document_type, issue_date) " +
+                              "VALUES(@trainer_id, @name, @document_type, @issue_date)";
+    
+        AddParameter(command, "trainer_id", trainerId);
+        AddParameter(command, "name", name);
+        AddParameter(command, "document_type", documentType);
+        AddParameter(command, "issue_date", issueDate);
+    
+        command.ExecuteNonQuery();
+    }
 
     private void AddParameter(IDbCommand command, string paramName, object value)
     {

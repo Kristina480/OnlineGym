@@ -22,10 +22,16 @@ public partial class MainWindow : Window
         this.Hide();
     }
 
-    private void OnRegisterClick(object? sender, RoutedEventArgs e)
+    private void OnRegisterClientClick(object? sender, RoutedEventArgs e)
     {
-        //RegisterWindow registerForm = new RegisterWindow();
-        //registerForm.Show();
+        RegisterClientWindow registerWindow = new RegisterClientWindow();
+        registerWindow.Show();
+        this.Hide();
+    }
+    private void OnRegisterTrainerClick(object? sender, RoutedEventArgs e)
+    {
+        RegisterTrainerWindow registerWindow = new RegisterTrainerWindow();
+        registerWindow.Show();
         this.Hide();
     }
 }
