@@ -1,8 +1,10 @@
 ﻿using System.Data;
 using OnlineGym.Application.Domain;
+using OnlineGym.Application.Interfaces.Repositories;
+
 namespace OnlineGym.Application.Database.Repositories;
 
-public class ClientRepository
+public class ClientRepository:IClientRepository
 {
      public bool UsernameExists(string username)
     {
@@ -96,5 +98,42 @@ public class ClientRepository
         parameter.ParameterName = "@" + paramName;
         parameter.Value = value;
         command.Parameters.Add(parameter);
+    }
+    public Client? GetById(long id)
+    {
+        using IDbConnection connection = PostgresConnection.CreateConnection();
+        IDbCommand command = connection.CreateCommand();
+
+        command.CommandText = @"
+        SELECT client_id,account_id,first_name,last_name,height,weight,goal,health_issues,workouts_per_week
+        FROM clients
+        WHERE client_id = @client_id;";
+
+        AddParameter(command, "client_id", id);
+
+        using IDataReader reader = command.ExecuteReader();
+
+        return reader.Read() ? MapFromReader(reader) : null;
+    }
+    private Client MapFromReader(IDataReader reader)
+    {
+        int goalIndex = reader.GetOrdinal("goal");
+        int healthIssuesIndex = reader.GetOrdinal("health_issues");
+
+        return new Client(
+            reader.GetInt64(reader.GetOrdinal("client_id")),
+            reader.GetInt64(reader.GetOrdinal("account_id")),
+            reader.GetString(reader.GetOrdinal("first_name")),
+            reader.GetString(reader.GetOrdinal("last_name")),
+            Convert.ToDouble(reader.GetDecimal(reader.GetOrdinal("height"))),
+            Convert.ToDouble(reader.GetDecimal(reader.GetOrdinal("weight"))),
+            reader.IsDBNull(goalIndex)
+                ? null
+                : reader.GetString(goalIndex),
+            reader.IsDBNull(healthIssuesIndex)
+                ? null
+                : reader.GetString(healthIssuesIndex),
+            reader.GetInt32(reader.GetOrdinal("workouts_per_week"))
+        );
     }
 }
