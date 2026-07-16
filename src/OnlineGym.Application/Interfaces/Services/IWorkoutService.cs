@@ -14,4 +14,5 @@ public interface IWorkoutService
     Workout? GetById(long workoutId);
     List<Workout> GetByClientId(long clientId);
     List<WorkoutItem> GetWorkoutItems(long workoutId);
+    List<Client> GetActiveClients(long trainerId);
 }

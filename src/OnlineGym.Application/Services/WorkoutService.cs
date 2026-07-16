@@ -154,5 +154,13 @@ public class WorkoutService:IWorkoutService
             }
         }
     }
-    
+    public List<Client> GetActiveClients(long trainerId)
+    {
+        if (_trainerRepository.GetById(trainerId) is null) throw new InvalidOperationException("Trener ne postoji.");
+        return _collaborationRepository.GetActiveByTrainerId(trainerId)
+            .Select(c => _clientRepository.GetById(c.ClientId))
+            .Where(c => c is not null)
+            .Cast<Client>()
+            .ToList();
+    }
 }

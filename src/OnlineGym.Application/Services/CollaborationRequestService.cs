@@ -188,4 +188,10 @@ public class CollaborationRequestService
             client.AccountId,
             content);
     }
+    public List<Trainer> GetAvailableTrainers(long clientId)
+    {
+        if (_clientRepository.GetById(clientId) is null)
+            throw new InvalidOperationException("Klijent ne postoji.");
+        return _trainerRepository.GetApprovedTrainers();
+    }
 }
