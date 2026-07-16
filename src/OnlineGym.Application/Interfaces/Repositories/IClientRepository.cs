@@ -1,4 +1,5 @@
 using System.Data;
+using OnlineGym.Application.Domain;
 
 namespace OnlineGym.Application.Interfaces.Repositories;
 
@@ -13,5 +14,5 @@ public interface IClientRepository
     public void RegisterClient(string username, string password, string firstName, string lastName, double height,
         double weight, string? goal, string? healthIssues, int workoutsPerWeek);
 
-
+    Client? GetById(long id);
 }
