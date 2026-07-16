@@ -54,4 +54,15 @@ public class CollaborationRequestService
 
         return _requestRepository.Insert(request);
     }
+    public List<CollaborationRequest> GetPendingRequests(long trainerId)
+    {
+        if (_trainerRepository.GetById(trainerId) is null)
+            throw new InvalidOperationException(
+                $"Trainer with ID {trainerId} does not exist.");
+
+        return _requestRepository.GetByTrainerIdAndStatus(
+            trainerId,
+            RequestStatus.Pending
+        );
+    }
 }
