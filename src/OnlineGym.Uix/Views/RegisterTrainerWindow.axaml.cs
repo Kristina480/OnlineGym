@@ -4,10 +4,15 @@ using Avalonia.Interactivity;
 using Avalonia.Markup.Xaml;
 using OnlineGym.Application.Database.Repositories;
 
+
 namespace OnlineGym.Uix.Views;
 
 public partial class RegisterTrainerWindow : Window
 {
+    public long? newTrainer;
+    public bool registered = false;
+    TrainerRepository repository = new TrainerRepository();
+    
     public RegisterTrainerWindow()
     {
         InitializeComponent();
@@ -20,8 +25,8 @@ public partial class RegisterTrainerWindow : Window
 
     private void OnRegisterClick(object? sender, RoutedEventArgs e)
     {
-        var firstnameBox = this.FindControl<TextBox>("FirstnameBox");
-        var lastnameBox = this.FindControl<TextBox>("LastnameBox");
+        var firstNameBox = this.FindControl<TextBox>("FirstNameBox");
+        var lastNameBox = this.FindControl<TextBox>("LastNameBox");
         var usernameBox = this.FindControl<TextBox>("UsernameBox");
         var passwordBox = this.FindControl<TextBox>("PasswordBox");
         var specializationBox = this.FindControl<TextBox>("SpecializationBox");
@@ -29,8 +34,8 @@ public partial class RegisterTrainerWindow : Window
         var recommendationsBox = this.FindControl<TextBox>("RecommendationsBox");
         var errorText = this.FindControl<TextBlock>("ErrorText");
         
-        string? first = firstnameBox?.Text;
-        string? last = lastnameBox?.Text;
+        string? first = firstNameBox?.Text;
+        string? last = lastNameBox?.Text;
         string? username = usernameBox?.Text;
         string? password = passwordBox?.Text;
         string? specialization = specializationBox?.Text;
@@ -43,14 +48,52 @@ public partial class RegisterTrainerWindow : Window
             return;
         }
         
-        TrainerRepository repository = new TrainerRepository();
         if (repository.UsernameExists(username))
         {
             errorText.Text = "Korisnicko ime vec postoji.";
             return;
         }
-        repository.RegisterTrainer(username, password, first, last, specialization, education, recommendations);
-        Console.WriteLine("Uspesna registracija!");
-        this.Close();
+        long accountId = repository.SaveUserAccount(username, password);
+        long trainerId = repository.SaveTrainer(accountId, first, last, specialization, education, recommendations);
+        repository.CreateRegistrationRequest(trainerId);
+        
+        newTrainer = trainerId;
+        registered = true;
+        errorText.Text ="Uspesna registracija! Ceka se odobrenje administratora.";
+        //this.Close();
+    }
+
+    private void OnSaveLicenseClick(object? sender, RoutedEventArgs e)
+    {
+        var licenseNameBox = this.FindControl<TextBox>("LicenseNameBox");
+        var documentTypeBox = this.FindControl<TextBox>("DocumentTypeBox");
+        var issueDatePicker = this.FindControl<DatePicker>("IssueDatePicker");
+        var errorText = this.FindControl<TextBlock>("ErrorText");
+        
+        string? licenseName = licenseNameBox?.Text;
+        string? documentType = documentTypeBox?.Text;
+        DateTimeOffset? issueDate = issueDatePicker?.SelectedDate;
+
+        if (string.IsNullOrWhiteSpace(licenseName) || string.IsNullOrWhiteSpace(documentType) || issueDate == null)
+        {
+            errorText.Text = "Popunite sva polja.";
+            return;
+        }
+        if (!registered || !newTrainer.HasValue)
+        {
+            errorText.Text = "Morate se prvo registrovati.";
+            return;
+        }
+        repository.SaveLicense(newTrainer.Value, licenseName, documentType, issueDate.Value.DateTime);
+        errorText.Text = "Licenca je dodata.";
+        licenseNameBox.Text = string.Empty;
+        documentTypeBox.Text = string.Empty;
+        issueDatePicker.SelectedDate = null;
+    }
+    private void OnBackClick(object? sender, RoutedEventArgs e)
+    {
+        LoginWindow loginWindow = new LoginWindow();
+        loginWindow.Show();
+        this.Hide();
     }
 }

@@ -1,8 +1,8 @@
 ﻿<Window xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         x:Class="OnlineGym.Uix.Views.RegisterTrainerWindow"
-        Width="450"
-        Height="650"
+        Width="500"
+        Height="700"
         Title="Trainer Registration">
 
     <ScrollViewer>
@@ -35,12 +35,42 @@
             <TextBox Name="RecommendationsBox"
                      Watermark="Recommendations (optional)"/>
 
+            <Border BorderBrush="Gray" 
+                    BorderThickness="0,1,0,0" 
+                    Margin="0,10,0,10"/>
+
+            <TextBlock Text="License Information"
+                       FontSize="18"
+                       HorizontalAlignment="Center"/>
+
+            <TextBox Name="LicenseNameBox"
+                     Watermark="License name (e.g. Personal Trainer Certificate)"/>
+
+            <TextBox Name="DocumentTypeBox"
+                     Watermark="Document type (e.g. Certificate, Diploma)"/>
+            
+            <DatePicker Name="IssueDatePicker"
+                        Width="200"
+                        HorizontalAlignment="Left"/>
+
+            <Button Content="Save License"
+                    HorizontalAlignment="Center"
+                    Click="OnSaveLicenseClick"/>
+
+            <Border BorderBrush="Gray" 
+                    BorderThickness="0,1,0,0" 
+                    Margin="0,10,0,10"/>
+
             <Button Content="Register"
                     HorizontalAlignment="Center"
                     Click="OnRegisterClick"/>
+            <Button Content="Back to login"
+                    HorizontalAlignment="Center"
+                    Click="OnBackClick"/>
 
             <TextBlock Name="ErrorText"
-                       Foreground="Red"/>
+                       Foreground="Red"
+                       TextWrapping="Wrap"/>
 
         </StackPanel>
 
