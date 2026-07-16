@@ -22,12 +22,18 @@
                 VerticalContentAlignment="Center"
                 Click="OnLoginClick" />
 
-        <Button Content="Register"
+        <Button Content="Register as client"
                 Width="140"
                 HorizontalAlignment="Center"
                 HorizontalContentAlignment="Center"
                 VerticalContentAlignment="Center"
-                Click="OnRegisterClick" />
+                Click="OnRegisterClientClick" />
+        <Button Content="Register as trainer"
+                Width="140"
+                HorizontalAlignment="Center"
+                HorizontalContentAlignment="Center"
+                VerticalContentAlignment="Center"
+                Click="OnRegisterTrainerClick" />
 
     </StackPanel>
 

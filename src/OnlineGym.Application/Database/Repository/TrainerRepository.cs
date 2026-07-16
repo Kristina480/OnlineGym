@@ -67,6 +67,58 @@ public class TrainerRepository:ITrainerRepository
         CreateRegistrationRequest(trainerId);
     }
 
+    public void SaveLicense(long trainerId, string name, string documentType, DateTime issueDate)
+    {
+        using IDbConnection connection = PostgresConnection.CreateConnection();
+        IDbCommand command = connection.CreateCommand();
+        command.CommandText = "INSERT INTO licenses(trainer_id, name, document_type, issue_date) " +
+                              "VALUES(@trainer_id, @name, @document_type, @issue_date)";
+
+        AddParameter(command, "trainer_id", trainerId);
+        AddParameter(command, "name", name);
+        AddParameter(command, "document_type", documentType);
+        AddParameter(command, "issue_date", issueDate);
+
+        command.ExecuteNonQuery();
+    }
+    // OnlineGym.Application.Database.Repositories.TrainerRepository.cs
+
+    public Trainer? GetTrainerByAccountId(long accountId)
+    {
+        using IDbConnection connection = PostgresConnection.CreateConnection();
+        IDbCommand command = connection.CreateCommand();
+        command.CommandText =
+            @"SELECT trainer_id, account_id, first_name, last_name, specialization, average_rating, education, recommendations 
+                            FROM trainers WHERE account_id = @account_id";
+        AddParameter(command, "account_id", accountId);
+
+        using var reader = command.ExecuteReader();
+        if (reader.Read())
+        {
+            return new Trainer(reader.GetInt64(0), reader.GetInt64(1), reader.GetString(2), reader.GetString(3),
+                reader.IsDBNull(4) ? null : reader.GetString(4), reader.GetDouble(5),
+                reader.IsDBNull(6) ? null : reader.GetString(6),
+                reader.IsDBNull(7) ? null : reader.GetString(7)
+            );
+        }
+
+        return null;
+    }
+
+    public string? GetRegistrationStatus(long trainerId)
+    {
+        using IDbConnection connection = PostgresConnection.CreateConnection();
+        IDbCommand command = connection.CreateCommand();
+        command.CommandText = "SELECT status FROM registration_requests WHERE trainer_id = @trainer_id";
+        AddParameter(command, "trainer_id", trainerId);
+        object? result = command.ExecuteScalar();
+        if (result == null || result==DBNull.Value)
+        {
+            return null;
+        }
+        return result.ToString();
+    }
+
     private void AddParameter(IDbCommand command, string paramName, object value)
     {
         IDbDataParameter parameter = command.CreateParameter();

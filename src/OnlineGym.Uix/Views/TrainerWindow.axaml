@@ -1,0 +1,26 @@
+﻿<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        x:Class="OnlineGym.Uix.Views.TrainerWindow"
+        Width="500"
+        Height="400"
+        Title="Client Dashboard">
+
+    <Grid Margin="20" RowDefinitions="Auto,Auto,Auto,*">
+        <Border Grid.Row="1" 
+                BorderBrush="Gray" 
+                BorderThickness="0,1,0,0" 
+                Margin="0,0,0,20"/>
+
+        <StackPanel Grid.Row="2" Spacing="15" HorizontalAlignment="Center">
+            <Button Content="Odjava"
+                    Width="250"
+                    Height="50"
+                    Click="OnLogoutClick"
+                    FontSize="16"
+                    Background="DarkRed"
+                    Foreground="White"/>
+
+        </StackPanel>
+    </Grid>
+
+</Window>
