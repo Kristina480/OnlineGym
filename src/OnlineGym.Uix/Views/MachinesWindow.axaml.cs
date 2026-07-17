@@ -149,8 +149,7 @@ public partial class MachinesWindow : Window
             _selectedMachine.Name = name;
 
             _machineRepository.Update(_selectedMachine);
-
-            // Osvežavanje prikaza jer se naziv objekta promenio.
+            
             LoadMachines();
             ClearForm();
 
