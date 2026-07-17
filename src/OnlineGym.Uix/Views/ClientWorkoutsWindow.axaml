@@ -3,6 +3,7 @@
         xmlns:domain="clr-namespace:OnlineGym.Application.Domain;assembly=OnlineGym.Application"
         xmlns:views="clr-namespace:OnlineGym.Uix.Views"
         x:Class="OnlineGym.Uix.Views.ClientWorkoutsWindow"
+        x:CompileBindings="False"
         Width="850"
         Height="600"
         Title="Moji treninzi">

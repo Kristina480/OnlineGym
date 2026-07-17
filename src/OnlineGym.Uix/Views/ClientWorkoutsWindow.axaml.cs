@@ -28,6 +28,11 @@ public partial class ClientWorkoutsWindow : Window
         LoadWorkouts();
     }
 
+    public ClientWorkoutsWindow()
+    {
+        InitializeComponent();
+    }
+
     private void InitializeComponent()
     {
         AvaloniaXamlLoader.Load(this);
