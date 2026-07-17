@@ -31,6 +31,15 @@ public partial class ClientWindow : Window
         }
     }
 
+    private void OnRateWorkoutItemsClick(object? sender, RoutedEventArgs e)
+    {
+        if (client != null)
+        {
+            var rateWorkoutItemsWindow = new RateWorkoutItemsWindow(client.ClientId);
+            rateWorkoutItemsWindow.Show();
+        }
+    }
+
     private void OnLogoutClick(object? sender, RoutedEventArgs e)
     {
         client = null;
