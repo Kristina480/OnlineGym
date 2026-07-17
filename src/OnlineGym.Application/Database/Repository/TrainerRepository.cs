@@ -81,8 +81,6 @@ public class TrainerRepository:ITrainerRepository
 
         command.ExecuteNonQuery();
     }
-    // OnlineGym.Application.Database.Repositories.TrainerRepository.cs
-
     public Trainer? GetTrainerByAccountId(long accountId)
     {
         using IDbConnection connection = PostgresConnection.CreateConnection();
