@@ -9,20 +9,45 @@ namespace OnlineGym.Uix.ViewModels;
 public class ExerciseManagementViewModel
 {
     private readonly long _trainerId;
+
     private readonly IExerciseService _service;
 
-    public ExerciseManagementViewModel(long trainerId)
+    private readonly EquipmentRepository
+        _equipmentRepository;
+
+    private readonly MachineRepository
+        _machineRepository;
+
+    public ExerciseManagementViewModel(
+        long trainerId)
     {
         _trainerId = trainerId;
 
         _service = new ExerciseService(
             new ExerciseRepository(),
             new TrainerRepository());
+
+        _equipmentRepository =
+            new EquipmentRepository();
+
+        _machineRepository =
+            new MachineRepository();
     }
 
     public List<Exercise> GetExercises()
     {
-        return _service.GetTrainerExercises(_trainerId);
+        return _service
+            .GetTrainerExercises(_trainerId);
+    }
+
+    public List<Equipment> GetEquipment()
+    {
+        return _equipmentRepository.GetAll();
+    }
+
+    public List<Machine> GetMachines()
+    {
+        return _machineRepository.GetAll();
     }
 
     public long CreateExercise(
@@ -31,7 +56,7 @@ public class ExerciseManagementViewModel
         long? equipmentId,
         long? machineId)
     {
-        Exercise exercise = new Exercise(
+        Exercise exercise = new(
             0,
             _trainerId,
             equipmentId,
@@ -39,11 +64,16 @@ public class ExerciseManagementViewModel
             name,
             videoUrl);
 
-        return _service.CreateExercise(exercise, _trainerId);
+        return _service.CreateExercise(
+            exercise,
+            _trainerId);
     }
 
-    public void DeleteExercise(long exerciseId)
+    public void DeleteExercise(
+        long exerciseId)
     {
-        _service.DeleteExercise(exerciseId, _trainerId);
+        _service.DeleteExercise(
+            exerciseId,
+            _trainerId);
     }
 }

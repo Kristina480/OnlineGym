@@ -51,8 +51,12 @@
                                  Background="White">
                         <dg:DataGrid.Columns>
                             <dg:DataGridTextColumn Header="Naziv" Binding="{Binding Name}" Width="1.5*"/>
-                            <dg:DataGridTextColumn Header="Rekvizit ID" Binding="{Binding EquipmentId}" Width="*"/>
-                            <dg:DataGridTextColumn Header="Sprava ID" Binding="{Binding MachineId}" Width="*"/>
+                            <dg:DataGridTextColumn Header="Rekvizit"
+                                                   Binding="{Binding EquipmentName}"
+                                                   Width="*"/>
+                            <dg:DataGridTextColumn Header="Sprava"
+                                                   Binding="{Binding MachineName}"
+                                                   Width="*"/>
                             <dg:DataGridTextColumn Header="Video" Binding="{Binding VideoUrl}" Width="1.5*"/>
                         </dg:DataGrid.Columns>
                     </dg:DataGrid>

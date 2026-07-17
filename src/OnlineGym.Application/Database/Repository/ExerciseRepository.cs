@@ -74,14 +74,20 @@ public class ExerciseRepository
             connection.CreateCommand();
 
         command.CommandText = @"
-            SELECT exercise_id,
-                   trainer_id,
-                   equipment_id,
-                   machine_id,
-                   name,
-                   video_url
-            FROM exercises
-            WHERE exercise_id = @exercise_id;";
+        SELECT e.exercise_id,
+               e.trainer_id,
+               e.equipment_id,
+               e.machine_id,
+               e.name,
+               e.video_url,
+               eq.name AS equipment_name,
+               m.name AS machine_name
+        FROM exercises e
+        LEFT JOIN equipment eq
+            ON e.equipment_id = eq.equipment_id
+        LEFT JOIN machines m
+            ON e.machine_id = m.machine_id
+        WHERE e.exercise_id = @exercise_id;";
 
         DataBaseHelper.AddParameter(
             command,
@@ -95,7 +101,7 @@ public class ExerciseRepository
             ? MapFromReader(reader)
             : null;
     }
-
+    
     public List<Exercise> GetByTrainerId(
         long trainerId)
     {
@@ -108,15 +114,21 @@ public class ExerciseRepository
             connection.CreateCommand();
 
         command.CommandText = @"
-            SELECT exercise_id,
-                   trainer_id,
-                   equipment_id,
-                   machine_id,
-                   name,
-                   video_url
-            FROM exercises
-            WHERE trainer_id = @trainer_id
-            ORDER BY name;";
+        SELECT e.exercise_id,
+               e.trainer_id,
+               e.equipment_id,
+               e.machine_id,
+               e.name,
+               e.video_url,
+               eq.name AS equipment_name,
+               m.name AS machine_name
+        FROM exercises e
+        LEFT JOIN equipment eq
+            ON e.equipment_id = eq.equipment_id
+        LEFT JOIN machines m
+            ON e.machine_id = m.machine_id
+        WHERE e.trainer_id = @trainer_id
+        ORDER BY e.name;";
 
         DataBaseHelper.AddParameter(
             command,
@@ -327,24 +339,40 @@ public class ExerciseRepository
         int videoUrlIndex =
             reader.GetOrdinal("video_url");
 
-        return new Exercise(
+        int equipmentNameIndex =
+            reader.GetOrdinal("equipment_name");
+
+        int machineNameIndex =
+            reader.GetOrdinal("machine_name");
+
+        Exercise exercise = new(
             reader.GetInt64(
                 reader.GetOrdinal("exercise_id")),
             reader.GetInt64(
                 reader.GetOrdinal("trainer_id")),
             reader.IsDBNull(equipmentIdIndex)
                 ? null
-                : reader.GetInt64(
-                    equipmentIdIndex),
+                : reader.GetInt64(equipmentIdIndex),
             reader.IsDBNull(machineIdIndex)
                 ? null
-                : reader.GetInt64(
-                    machineIdIndex),
+                : reader.GetInt64(machineIdIndex),
             reader.GetString(
                 reader.GetOrdinal("name")),
             reader.IsDBNull(videoUrlIndex)
                 ? null
-                : reader.GetString(
-                    videoUrlIndex));
+                : reader.GetString(videoUrlIndex)
+        );
+
+        exercise.EquipmentName =
+            reader.IsDBNull(equipmentNameIndex)
+                ? "Bez rekvizita"
+                : reader.GetString(equipmentNameIndex);
+
+        exercise.MachineName =
+            reader.IsDBNull(machineNameIndex)
+                ? "Bez sprave"
+                : reader.GetString(machineNameIndex);
+
+        return exercise;
     }
 }

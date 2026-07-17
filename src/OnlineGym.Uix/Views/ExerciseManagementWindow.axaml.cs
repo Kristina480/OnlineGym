@@ -18,11 +18,14 @@ public partial class ExerciseManagementWindow : Window
         InitializeComponent();
     }
 
-    public ExerciseManagementWindow(long trainerId) : this()
+    public ExerciseManagementWindow(
+        long trainerId) : this()
     {
         _viewModel =
-            new ExerciseManagementViewModel(trainerId);
+            new ExerciseManagementViewModel(
+                trainerId);
 
+        LoadAvailableEquipmentAndMachines();
         LoadExercises(showEmptyMessage: true);
     }
 
@@ -31,16 +34,60 @@ public partial class ExerciseManagementWindow : Window
         AvaloniaXamlLoader.Load(this);
     }
 
-    private bool LoadExercises(bool showEmptyMessage)
+    private void LoadAvailableEquipmentAndMachines()
+    {
+        try
+        {
+            if (_viewModel is null)
+            {
+                throw new InvalidOperationException(
+                    "Prozor nije pravilno inicijalizovan.");
+            }
+
+            ComboBox equipmentComboBox =
+                GetControl<ComboBox>(
+                    "EquipmentComboBox");
+
+            ComboBox machineComboBox =
+                GetControl<ComboBox>(
+                    "MachineComboBox");
+
+            List<Equipment> equipment =
+                _viewModel.GetEquipment();
+
+            List<Machine> machines =
+                _viewModel.GetMachines();
+
+            equipmentComboBox.ItemsSource =
+                equipment;
+
+            machineComboBox.ItemsSource =
+                machines;
+
+            // Nijedan rekvizit ili sprava nisu obavezni.
+            equipmentComboBox.SelectedIndex = -1;
+            machineComboBox.SelectedIndex = -1;
+        }
+        catch (Exception exception)
+        {
+            ShowError(exception);
+        }
+    }
+
+    private bool LoadExercises(
+        bool showEmptyMessage)
     {
         DataGrid grid =
-            GetControl<DataGrid>("ExercisesDataGrid");
+            GetControl<DataGrid>(
+                "ExercisesDataGrid");
 
         try
         {
             if (_viewModel is null)
+            {
                 throw new InvalidOperationException(
                     "Prozor nije pravilno inicijalizovan.");
+            }
 
             List<Exercise> exercises =
                 _viewModel.GetExercises();
@@ -49,15 +96,21 @@ public partial class ExerciseManagementWindow : Window
             grid.SelectedItem = null;
 
             GetControl<Button>(
-                "DeleteExerciseButton").IsEnabled =
+                "DeleteExerciseButton")
+                .IsEnabled =
                 exercises.Count > 0;
 
             if (showEmptyMessage)
             {
                 if (exercises.Count == 0)
-                    ShowInfo("Još nemate kreirane vežbe.");
+                {
+                    ShowInfo(
+                        "Još nemate kreirane vežbe.");
+                }
                 else
+                {
                     ClearMessage();
+                }
             }
 
             return true;
@@ -65,9 +118,13 @@ public partial class ExerciseManagementWindow : Window
         catch (Exception exception)
         {
             grid.ItemsSource = null;
+
             GetControl<Button>(
-                "DeleteExerciseButton").IsEnabled = false;
+                "DeleteExerciseButton")
+                .IsEnabled = false;
+
             ShowError(exception);
+
             return false;
         }
     }
@@ -78,53 +135,68 @@ public partial class ExerciseManagementWindow : Window
     {
         if (_viewModel is null)
         {
-            ShowError("Prozor nije pravilno inicijalizovan.");
+            ShowError(
+                "Prozor nije pravilno inicijalizovan.");
+
             return;
         }
 
         TextBox nameBox =
-            GetControl<TextBox>("NameTextBox");
+            GetControl<TextBox>(
+                "NameTextBox");
 
         TextBox videoBox =
-            GetControl<TextBox>("VideoUrlTextBox");
+            GetControl<TextBox>(
+                "VideoUrlTextBox");
 
-        TextBox equipmentBox =
-            GetControl<TextBox>("EquipmentIdTextBox");
+        ComboBox equipmentComboBox =
+            GetControl<ComboBox>(
+                "EquipmentComboBox");
 
-        TextBox machineBox =
-            GetControl<TextBox>("MachineIdTextBox");
+        ComboBox machineComboBox =
+            GetControl<ComboBox>(
+                "MachineComboBox");
 
         string name =
-            nameBox.Text?.Trim() ?? string.Empty;
+            nameBox.Text?.Trim()
+            ?? string.Empty;
 
         if (string.IsNullOrWhiteSpace(name))
         {
-            ShowError("Naziv vežbe je obavezan.");
-            return;
-        }
-
-        if (!TryParseOptionalId(
-                equipmentBox.Text,
-                out long? equipmentId) ||
-            !TryParseOptionalId(
-                machineBox.Text,
-                out long? machineId))
-        {
             ShowError(
-                "ID rekvizita i sprave moraju biti pozitivni celi brojevi.");
+                "Naziv vežbe je obavezan.");
+
             return;
         }
 
-        Button? button = sender as Button;
+        Equipment? selectedEquipment =
+            equipmentComboBox.SelectedItem
+                as Equipment;
+
+        Machine? selectedMachine =
+            machineComboBox.SelectedItem
+                as Machine;
+
+        long? equipmentId =
+            selectedEquipment?.Id;
+
+        long? machineId =
+            selectedMachine?.Id;
+
+        Button? button =
+            sender as Button;
 
         try
         {
             if (button is not null)
+            {
                 button.IsEnabled = false;
+            }
 
             _viewModel.CreateExercise(
                 name,
-                string.IsNullOrWhiteSpace(videoBox.Text)
+                string.IsNullOrWhiteSpace(
+                    videoBox.Text)
                     ? null
                     : videoBox.Text.Trim(),
                 equipmentId,
@@ -132,11 +204,15 @@ public partial class ExerciseManagementWindow : Window
 
             nameBox.Text = string.Empty;
             videoBox.Text = string.Empty;
-            equipmentBox.Text = string.Empty;
-            machineBox.Text = string.Empty;
 
-            LoadExercises(showEmptyMessage: false);
-            ShowSuccess("Vežba je uspešno kreirana.");
+            equipmentComboBox.SelectedIndex = -1;
+            machineComboBox.SelectedIndex = -1;
+
+            LoadExercises(
+                showEmptyMessage: false);
+
+            ShowSuccess(
+                "Vežba je uspešno kreirana.");
         }
         catch (Exception exception)
         {
@@ -145,7 +221,9 @@ public partial class ExerciseManagementWindow : Window
         finally
         {
             if (button is not null)
+            {
                 button.IsEnabled = true;
+            }
         }
     }
 
@@ -155,30 +233,43 @@ public partial class ExerciseManagementWindow : Window
     {
         if (_viewModel is null)
         {
-            ShowError("Prozor nije pravilno inicijalizovan.");
+            ShowError(
+                "Prozor nije pravilno inicijalizovan.");
+
             return;
         }
 
         DataGrid grid =
-            GetControl<DataGrid>("ExercisesDataGrid");
+            GetControl<DataGrid>(
+                "ExercisesDataGrid");
 
-        if (grid.SelectedItem is not Exercise exercise)
+        if (grid.SelectedItem
+            is not Exercise exercise)
         {
-            ShowError("Izaberite vežbu za brisanje.");
+            ShowError(
+                "Izaberite vežbu za brisanje.");
+
             return;
         }
 
-        Button? button = sender as Button;
+        Button? button =
+            sender as Button;
 
         try
         {
             if (button is not null)
+            {
                 button.IsEnabled = false;
+            }
 
-            _viewModel.DeleteExercise(exercise.Id);
+            _viewModel.DeleteExercise(
+                exercise.Id);
 
-            LoadExercises(showEmptyMessage: false);
-            ShowSuccess("Vežba je obrisana.");
+            LoadExercises(
+                showEmptyMessage: false);
+
+            ShowSuccess(
+                "Vežba je obrisana.");
         }
         catch (Exception exception)
         {
@@ -187,29 +278,10 @@ public partial class ExerciseManagementWindow : Window
         finally
         {
             if (button is not null)
+            {
                 button.IsEnabled = true;
+            }
         }
-    }
-
-    private static bool TryParseOptionalId(
-        string? text,
-        out long? id)
-    {
-        if (string.IsNullOrWhiteSpace(text))
-        {
-            id = null;
-            return true;
-        }
-
-        if (long.TryParse(text, out long parsed) &&
-            parsed > 0)
-        {
-            id = parsed;
-            return true;
-        }
-
-        id = null;
-        return false;
     }
 
     private void OnCloseClick(
@@ -219,48 +291,63 @@ public partial class ExerciseManagementWindow : Window
         Close();
     }
 
-    private T GetControl<T>(string name) where T : Control
+    private T GetControl<T>(
+        string name)
+        where T : Control
     {
         return this.FindControl<T>(name)
             ?? throw new InvalidOperationException(
                 $"Kontrola '{name}' nije pronađena u XAML-u.");
     }
 
-    private void ShowSuccess(string text)
+    private void ShowSuccess(
+        string text)
     {
         TextBlock message =
-            GetControl<TextBlock>("MessageTextBlock");
+            GetControl<TextBlock>(
+                "MessageTextBlock");
 
         message.Text = text;
-        message.Foreground = Brushes.DarkGreen;
+        message.Foreground =
+            Brushes.DarkGreen;
     }
 
-    private void ShowInfo(string text)
+    private void ShowInfo(
+        string text)
     {
         TextBlock message =
-            GetControl<TextBlock>("MessageTextBlock");
+            GetControl<TextBlock>(
+                "MessageTextBlock");
 
         message.Text = text;
-        message.Foreground = Brushes.DimGray;
+        message.Foreground =
+            Brushes.DimGray;
     }
 
-    private void ShowError(string text)
+    private void ShowError(
+        string text)
     {
         TextBlock message =
-            GetControl<TextBlock>("MessageTextBlock");
+            GetControl<TextBlock>(
+                "MessageTextBlock");
 
         message.Text = text;
-        message.Foreground = Brushes.DarkRed;
+        message.Foreground =
+            Brushes.DarkRed;
     }
 
-    private void ShowError(Exception exception)
+    private void ShowError(
+        Exception exception)
     {
-        Console.Error.WriteLine(exception);
+        Console.Error.WriteLine(
+            exception);
 
-        if (exception is InvalidOperationException
+        if (exception
+            is InvalidOperationException
             or ArgumentException)
         {
-            ShowError(exception.Message);
+            ShowError(
+                exception.Message);
         }
         else
         {
@@ -272,6 +359,7 @@ public partial class ExerciseManagementWindow : Window
     private void ClearMessage()
     {
         GetControl<TextBlock>(
-            "MessageTextBlock").Text = string.Empty;
+            "MessageTextBlock")
+            .Text = string.Empty;
     }
 }
