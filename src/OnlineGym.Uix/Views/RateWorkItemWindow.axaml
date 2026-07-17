@@ -3,6 +3,7 @@
         xmlns:vm="clr-namespace:OnlineGym.Uix.ViewModels"
         x:Class="OnlineGym.Uix.Views.RateWorkoutItemsWindow"
         x:DataType="vm:RateWorkoutItemsViewModel"
+        x:CompileBindings="False"
         Width="500" Height="500"
         Title="Ocenjivanje vezbi">
 
