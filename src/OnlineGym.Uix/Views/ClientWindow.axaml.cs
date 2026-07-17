@@ -90,4 +90,13 @@ public partial class ClientWindow : Window
 
         window.Show();
     }
+    
+    private void OnWorkoutsClick(object? sender, RoutedEventArgs e)
+    {
+        if (client != null)
+        {
+            var workoutsWindow = new ClientWorkoutsWindow(client);
+            workoutsWindow.Show();
+        }
+    }
 }
