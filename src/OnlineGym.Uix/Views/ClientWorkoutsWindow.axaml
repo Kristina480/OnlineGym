@@ -1,0 +1,90 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:domain="clr-namespace:OnlineGym.Application.Domain;assembly=OnlineGym.Application"
+        xmlns:views="clr-namespace:OnlineGym.Uix.Views"
+        x:Class="OnlineGym.Uix.Views.ClientWorkoutsWindow"
+        Width="850"
+        Height="600"
+        Title="Moji treninzi">
+
+    <Grid Margin="20" ColumnDefinitions="300,*" RowDefinitions="Auto,*">
+        <TextBlock Grid.ColumnSpan="2"
+                   Text="Moji treninzi"
+                   FontSize="24"
+                   FontWeight="Bold"
+                   Margin="0,0,0,15"/>
+
+        <ListBox Name="WorkoutsListBox"
+                 Grid.Row="1"
+                 Grid.Column="0"
+                 SelectionChanged="OnWorkoutSelected"
+                 Margin="0,0,15,0">
+            <ListBox.ItemTemplate>
+                <DataTemplate x:DataType="domain:Workout">
+    				<StackPanel Margin="5">
+        				<TextBlock Text="{Binding ScheduledAt}" FontWeight="Bold"/>
+        				<TextBlock Text="{Binding Status}"/>
+        				<TextBlock Text="{Binding WorkoutRating}"/>
+    				</StackPanel>
+				</DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
+
+        <ScrollViewer Grid.Row="1" Grid.Column="1">
+            <StackPanel Spacing="10">
+                <TextBlock Name="SelectedWorkoutText"
+                           Text="Izaberite trening."
+                           FontSize="18"
+                           FontWeight="Bold"/>
+
+                <TextBlock Text="Vezbe:" FontWeight="Bold"/>
+
+                <ListBox Name="WorkoutItemsListBox" Height="180">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate x:DataType="views:WorkoutItemDisplay">
+    						<StackPanel Margin="5">
+        						<TextBlock Text="{Binding ExerciseName}" FontWeight="Bold"/>
+        						<TextBlock Text="{Binding RepetitionText}"/>
+        						<TextBlock Text="{Binding VideoUrl}"/>
+    						</StackPanel>
+						</DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+
+                <TextBlock Text="Ocena treninga (1-5):"/>
+                <TextBox Name="WorkoutRatingBox" Watermark="Unesite ocenu treninga"/>
+
+                <TextBlock Text="Komentar za trening:"/>
+                <TextBox Name="WorkoutCommentBox"
+                         Watermark="Unesite komentar"
+                         AcceptsReturn="True"
+                         Height="70"/>
+
+                <Button Content="Sacuvaj ocenu treninga"
+                        Width="220"
+                        Click="OnSaveWorkoutRatingClick"/>
+
+                <Border BorderBrush="Gray"
+                        BorderThickness="0,1,0,0"
+                        Margin="0,10,0,10"/>
+
+                <TextBlock Text="Ocena trenera (1-5):"/>
+                <TextBox Name="TrainerRatingBox" Watermark="Unesite ocenu trenera"/>
+
+                <TextBlock Text="Komentar za trenera:"/>
+                <TextBox Name="TrainerCommentBox"
+                         Watermark="Unesite komentar"
+                         AcceptsReturn="True"
+                         Height="70"/>
+
+                <Button Content="Sacuvaj ocenu trenera"
+                        Width="220"
+                        Click="OnSaveTrainerRatingClick"/>
+
+                <TextBlock Name="MessageText"
+                           Foreground="DarkRed"
+                           TextWrapping="Wrap"/>
+            </StackPanel>
+        </ScrollViewer>
+    </Grid>
+</Window>
