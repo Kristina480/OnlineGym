@@ -8,6 +8,10 @@ namespace OnlineGym.Uix.Views;
 
 public partial class RateWorkoutItemsWindow : Window
 {
+    public RateWorkoutItemsWindow()
+    {
+        InitializeComponent();
+    }
     public RateWorkoutItemsWindow(long clientId)
     {
         InitializeComponent();
