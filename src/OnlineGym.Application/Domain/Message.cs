@@ -8,6 +8,8 @@ public class Message
     public string Content { get; set; }
     public bool IsRead { get; set; }
     public DateTime SentAt { get; set; }
+    public string SenderName { get; set; } = string.Empty;
+
 
     public Message(
         long id,

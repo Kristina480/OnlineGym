@@ -1,0 +1,125 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:dg="using:Avalonia.Controls"
+        x:Class="OnlineGym.Uix.Views.ExerciseManagementWindow"
+        x:CompileBindings="False"
+        Width="1000"
+        Height="650"
+        MinWidth="850"
+        MinHeight="560"
+        Title="Upravljanje vežbama"
+        WindowStartupLocation="CenterScreen">
+
+    <Window.Styles>
+        <Style Selector="Button">
+            <Setter Property="Padding" Value="16,9"/>
+            <Setter Property="CornerRadius" Value="7"/>
+        </Style>
+        <Style Selector="DataGridColumnHeader">
+            <Setter Property="Background" Value="#E9EDF4"/>
+            <Setter Property="Foreground" Value="#1F2937"/>
+        </Style>
+    </Window.Styles>
+
+    <Grid Margin="26" RowDefinitions="Auto,Auto,*,Auto">
+        <StackPanel Grid.Row="0" Spacing="5">
+            <TextBlock Text="Moje vežbe"
+                       FontSize="28"
+                       FontWeight="Bold"/>
+            <TextBlock Text="Pregledajte postojeće vežbe ili kreirajte novu."
+                       Foreground="#667085"/>
+        </StackPanel>
+
+        <Border Grid.Row="1"
+                Height="1"
+                Background="#D8DEE8"
+                Margin="0,18"/>
+
+        <Grid Grid.Row="2" ColumnDefinitions="1.7*,1*" ColumnSpacing="20">
+            <Border Grid.Column="0"
+                    Padding="12"
+                    CornerRadius="9"
+                    BorderBrush="#D8DEE8"
+                    BorderThickness="1">
+                <Grid RowDefinitions="*,Auto">
+                    <dg:DataGrid Grid.Row="0"
+                                 x:Name="ExercisesDataGrid"
+                                 AutoGenerateColumns="False"
+                                 IsReadOnly="True"
+                                 SelectionMode="Single"
+                                 GridLinesVisibility="Horizontal"
+                                 Background="White">
+                        <dg:DataGrid.Columns>
+                            <dg:DataGridTextColumn Header="Naziv" Binding="{Binding Name}" Width="1.5*"/>
+                            <dg:DataGridTextColumn Header="Rekvizit ID" Binding="{Binding EquipmentId}" Width="*"/>
+                            <dg:DataGridTextColumn Header="Sprava ID" Binding="{Binding MachineId}" Width="*"/>
+                            <dg:DataGridTextColumn Header="Video" Binding="{Binding VideoUrl}" Width="1.5*"/>
+                        </dg:DataGrid.Columns>
+                    </dg:DataGrid>
+
+                    <Button Grid.Row="1"
+                            x:Name="DeleteExerciseButton"
+                            Content="Obriši izabranu vežbu"
+                            HorizontalAlignment="Right"
+                            Margin="0,12,0,0"
+                            Background="DarkRed"
+                            Foreground="White"
+                            Click="OnDeleteClick"/>
+                </Grid>
+            </Border>
+
+            <Border Grid.Column="1"
+                    Padding="18"
+                    CornerRadius="9"
+                    Background="#F4F6F9">
+                <StackPanel Spacing="11">
+                    <TextBlock Text="Nova vežba"
+                               FontSize="20"
+                               FontWeight="SemiBold"/>
+                    <TextBox x:Name="NameTextBox"
+                             PlaceholderText="Naziv vežbe"/>
+                    <TextBox x:Name="VideoUrlTextBox"
+                             PlaceholderText="Link snimka (opciono)"/>
+                    <StackPanel Spacing="5">
+                        <TextBlock Text="Rekvizit"/>
+
+                        <ComboBox x:Name="EquipmentComboBox"
+                                  PlaceholderText="Bez rekvizita">
+                            <ComboBox.ItemTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding Name}"/>
+                                </DataTemplate>
+                            </ComboBox.ItemTemplate>
+                        </ComboBox>
+                    </StackPanel>
+
+                    <StackPanel Spacing="5">
+                        <TextBlock Text="Sprava"/>
+
+                        <ComboBox x:Name="MachineComboBox"
+                                  PlaceholderText="Bez sprave">
+                            <ComboBox.ItemTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding Name}"/>
+                                </DataTemplate>
+                            </ComboBox.ItemTemplate>
+                        </ComboBox>
+                    </StackPanel>
+                    <Button x:Name="CreateExerciseButton"
+                            Content="Sačuvaj vežbu"
+                            HorizontalAlignment="Stretch"
+                            Click="OnCreateClick"/>
+                    <TextBlock x:Name="MessageTextBlock"
+                               TextWrapping="Wrap"/>
+                </StackPanel>
+            </Border>
+        </Grid>
+
+        <Button Grid.Row="3"
+                Content="Nazad"
+                Width="120"
+                HorizontalAlignment="Left"
+                Margin="0,18,0,0"
+                Click="OnCloseClick"/>
+    </Grid>
+</Window>

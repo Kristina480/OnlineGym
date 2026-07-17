@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Xml.Schema;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.Markup.Xaml;
@@ -34,7 +35,50 @@ public partial class ClientWindow : Window
     {
         client = null;
         this.Close();
-        var loginWindow = new LoginWindow();
-        loginWindow.Show();
+        var mainWindow = new MainWindow();
+        mainWindow.Show();
+        // var loginWindow = new LoginWindow();
+        // loginWindow.Show();
+    }
+    
+    private void OnBrowseTrainersClick(
+        object? sender,
+        RoutedEventArgs e)
+    {
+        if (client is null)
+            return;
+
+        TrainerBrowserWindow window =
+            new TrainerBrowserWindow(client.ClientId);
+
+        Hide();
+
+        window.Closed += (_, _) =>
+        {
+            Show();
+            Activate();
+        };
+
+        window.Show();
+    }
+    private void OnMessagesClick(
+        object? sender,
+        RoutedEventArgs e)
+    {
+        if (client is null)
+            return;
+
+        ClientMessagesWindow window =
+            new ClientMessagesWindow(client.AccountId);
+
+        Hide();
+
+        window.Closed += (_, _) =>
+        {
+            Show();
+            Activate();
+        };
+
+        window.Show();
     }
 }

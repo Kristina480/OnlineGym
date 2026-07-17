@@ -6,5 +6,5 @@ public interface IMessageRepository
 {
     long Insert(Message message);
     List<Message> GetByRecipientAccountId(long recipientAccountId);
-
+    void MarkAllAsRead(long recipientAccountId);
 }

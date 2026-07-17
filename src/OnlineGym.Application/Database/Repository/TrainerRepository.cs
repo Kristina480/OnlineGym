@@ -180,12 +180,20 @@ public class TrainerRepository:ITrainerRepository
         using IDbConnection connection = PostgresConnection.CreateConnection();
         IDbCommand command = connection.CreateCommand();
         command.CommandText = @"
-        SELECT DISTINCT t.trainer_id, t.account_id, t.first_name, t.last_name,
-               t.specialization, t.average_rating, t.education, t.recommendations
+        SELECT DISTINCT
+            t.trainer_id,
+            t.account_id,
+            t.first_name,
+            t.last_name,
+            t.specialization,
+            t.average_rating,
+            t.education,
+            t.recommendations
         FROM trainers t
-        JOIN registration_requests rr ON rr.trainer_id = t.trainer_id
-        WHERE rr.status = 'APPROVED'::request_status_enum
-        ORDER BY t.average_rating DESC, t.last_name, t.first_name;";
+        INNER JOIN registration_requests rr
+            ON rr.trainer_id = t.trainer_id
+        WHERE rr.status = 'APPROVED'
+        ORDER BY t.first_name, t.last_name;";
         using IDataReader reader = command.ExecuteReader();
         while (reader.Read()) trainers.Add(MapFromReader(reader));
         return trainers;

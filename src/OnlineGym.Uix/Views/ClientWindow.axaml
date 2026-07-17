@@ -24,7 +24,18 @@
                     FontSize="16"
                     Background="DarkRed"
                     Foreground="White"/>
+            
+            <Button Content="Pregled trenera"
+                    Width="250"
+                    Height="50"
+                    Click="OnBrowseTrainersClick"
+                    FontSize="16"/>
 
+            <Button Content="Poruke"
+                    Width="250"
+                    Height="50"
+                    Click="OnMessagesClick"
+                    FontSize="16"/>
         </StackPanel>
     </Grid>
 

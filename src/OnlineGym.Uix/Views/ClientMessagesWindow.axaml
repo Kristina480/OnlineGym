@@ -1,0 +1,61 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        x:Class="OnlineGym.Uix.Views.ClientMessagesWindow"
+        x:CompileBindings="False"
+        Width="900"
+        Height="600"
+        MinWidth="700"
+        MinHeight="450"
+        Title="Poruke">
+
+    <Grid Margin="28"
+          RowDefinitions="Auto,Auto,*,Auto,Auto"
+          RowSpacing="14">
+
+        <TextBlock Grid.Row="0"
+                   Text="Moje poruke"
+                   FontSize="28"
+                   FontWeight="Bold"/>
+
+        <TextBlock Grid.Row="1"
+                   Text="Ovde možete videti odluke o zahtevima za saradnju i ostale primljene poruke."
+                   Foreground="DimGray"/>
+
+        <DataGrid x:Name="MessagesDataGrid"
+                  Grid.Row="2"
+                  AutoGenerateColumns="False"
+                  IsReadOnly="True"
+                  SelectionMode="Single"
+                  GridLinesVisibility="Horizontal"
+                  BorderThickness="1">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Datum i vreme"
+                                    Binding="{Binding SentAt}"
+                                    Width="190"/>
+                <DataGridTextColumn Header="Pošiljalac"
+                                    Binding="{Binding SenderName}"
+                                    Width="190"/>
+                <DataGridTextColumn Header="Poruka"
+                                    Binding="{Binding Content}"
+                                    Width="*"/>
+            </DataGrid.Columns>
+        </DataGrid>
+
+        <TextBlock x:Name="MessageTextBlock"
+                   Grid.Row="3"
+                   TextWrapping="Wrap"
+                   MinHeight="24"/>
+
+        <StackPanel Grid.Row="4"
+                    Orientation="Horizontal"
+                    HorizontalAlignment="Right"
+                    Spacing="12">
+            <Button Content="Osveži"
+                    Width="120"
+                    Click="OnRefreshClick"/>
+            <Button Content="Nazad"
+                    Width="120"
+                    Click="OnCloseClick"/>
+        </StackPanel>
+    </Grid>
+</Window>

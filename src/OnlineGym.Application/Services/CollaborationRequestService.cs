@@ -1,3 +1,6 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using OnlineGym.Application.Domain;
 using OnlineGym.Application.Domain.Enums;
 using OnlineGym.Application.Interfaces.Repositories;
@@ -6,13 +9,25 @@ using OnlineGym.Application.Interfaces.Services;
 namespace OnlineGym.Application.Services;
 
 public class CollaborationRequestService
+    : ICollaborationRequestService
 {
-    private readonly ICollaborationRequestRepository _requestRepository;
-    private readonly ICollaborationRepository _collaborationRepository;
-    private readonly IClientRepository _clientRepository;
-    private readonly ITrainerRepository _trainerRepository;
-    private readonly IPricingPackageRepository _pricingPackageRepository;
-    private readonly IMessageService _messageService;
+    private readonly ICollaborationRequestRepository
+        _requestRepository;
+
+    private readonly ICollaborationRepository
+        _collaborationRepository;
+
+    private readonly IClientRepository
+        _clientRepository;
+
+    private readonly ITrainerRepository
+        _trainerRepository;
+
+    private readonly IPricingPackageRepository
+        _pricingPackageRepository;
+
+    private readonly IMessageService
+        _messageService;
 
     public CollaborationRequestService(
         ICollaborationRequestRepository requestRepository,
@@ -20,178 +35,296 @@ public class CollaborationRequestService
         IClientRepository clientRepository,
         ITrainerRepository trainerRepository,
         IPricingPackageRepository pricingPackageRepository,
-            IMessageService messageService)
+        IMessageService messageService)
     {
-        _requestRepository = requestRepository;
-        _collaborationRepository = collaborationRepository;
-        _clientRepository = clientRepository;
-        _trainerRepository = trainerRepository;
-        _pricingPackageRepository = pricingPackageRepository;
+        _requestRepository =
+            requestRepository ??
+            throw new ArgumentNullException(
+                nameof(requestRepository));
+
+        _collaborationRepository =
+            collaborationRepository ??
+            throw new ArgumentNullException(
+                nameof(collaborationRepository));
+
+        _clientRepository =
+            clientRepository ??
+            throw new ArgumentNullException(
+                nameof(clientRepository));
+
+        _trainerRepository =
+            trainerRepository ??
+            throw new ArgumentNullException(
+                nameof(trainerRepository));
+
+        _pricingPackageRepository =
+            pricingPackageRepository ??
+            throw new ArgumentNullException(
+                nameof(pricingPackageRepository));
+
+        // OVA DODELA JE KLJUČNA.
+        _messageService =
+            messageService ??
+            throw new ArgumentNullException(
+                nameof(messageService));
     }
 
-    public bool SendRequest(long clientId, long trainerId)
+    public bool SendRequest(
+        long clientId,
+        long trainerId)
     {
-        EnsureClientAndTrainerExist(clientId, trainerId);
+        EnsureClientAndTrainerExist(
+            clientId,
+            trainerId);
 
-        if (_requestRepository.HasPendingRequest(clientId, trainerId))
-            throw new InvalidOperationException(
-                "A pending request for this trainer already exists.");
-
-        if (_collaborationRepository.HasActiveCollaboration(
+        if (_requestRepository.HasPendingRequest(
                 clientId,
                 trainerId))
         {
             throw new InvalidOperationException(
-                "The client already has an active collaboration with this trainer.");
+                "Već postoji zahtev na čekanju za ovog trenera.");
         }
 
-        CollaborationRequest request = new CollaborationRequest(
-            0,
-            clientId,
-            trainerId,
-            DateTime.Today,
-            RequestStatus.Pending
-        );
+        if (_collaborationRepository
+            .HasActiveCollaboration(
+                clientId,
+                trainerId))
+        {
+            throw new InvalidOperationException(
+                "Već imate aktivnu saradnju sa ovim trenerom.");
+        }
+
+        CollaborationRequest request =
+            new CollaborationRequest(
+                0,
+                clientId,
+                trainerId,
+                DateTime.Today,
+                RequestStatus.Pending);
 
         return _requestRepository.Insert(request);
     }
-    public List<CollaborationRequest> GetPendingRequests(long trainerId)
-    {
-        if (_trainerRepository.GetById(trainerId) is null)
-            throw new InvalidOperationException(
-                $"Trainer with ID {trainerId} does not exist.");
 
-        return _requestRepository.GetByTrainerIdAndStatus(
-            trainerId,
-            RequestStatus.Pending
-        );
+    public List<Trainer> GetAvailableTrainers(
+        long clientId)
+    {
+        if (_clientRepository.GetById(clientId)
+            is null)
+        {
+            throw new InvalidOperationException(
+                "Klijent ne postoji.");
+        }
+
+        return _trainerRepository
+            .GetApprovedTrainers()
+            .Where(trainer =>
+                !_requestRepository.HasPendingRequest(
+                    clientId,
+                    trainer.TrainerId) &&
+                !_collaborationRepository.HasActiveCollaboration(
+                    clientId,
+                    trainer.TrainerId))
+            .ToList();
     }
-    
-     public long ApproveRequest(
+
+    public List<CollaborationRequest>
+        GetPendingRequests(long trainerId)
+    {
+        if (_trainerRepository.GetById(trainerId)
+            is null)
+        {
+            throw new InvalidOperationException(
+                "Trener ne postoji.");
+        }
+
+        List<CollaborationRequest> requests =
+            _requestRepository
+                .GetByTrainerIdAndStatus(
+                    trainerId,
+                    RequestStatus.Pending);
+
+        foreach (CollaborationRequest request in requests)
+        {
+            Client? client =
+                _clientRepository.GetById(request.ClientId);
+
+            request.ClientName = client is null
+                ? "Nepoznat klijent"
+                : $"{client.FirstName} {client.LastName}";
+        }
+
+        return requests;
+    }
+
+    public long ApproveRequest(
         long requestId,
         long trainerId,
         long pricingPackageId)
     {
         CollaborationRequest request =
-            GetPendingRequestForTrainer(requestId, trainerId);
+            GetPendingRequestForTrainer(
+                requestId,
+                trainerId);
 
-        if (_collaborationRepository.HasActiveCollaboration(
+        if (_collaborationRepository
+            .HasActiveCollaboration(
                 request.ClientId,
                 trainerId))
         {
             throw new InvalidOperationException(
-                "An active collaboration already exists.");
+                "Aktivna saradnja već postoji.");
         }
 
         PricingPackage? pricingPackage =
-            _pricingPackageRepository.GetById(pricingPackageId);
+            _pricingPackageRepository
+                .GetById(pricingPackageId);
 
         if (pricingPackage is null)
+        {
             throw new InvalidOperationException(
-                $"Pricing package with ID {pricingPackageId} does not exist.");
+                "Paket cena ne postoji.");
+        }
 
-        if (pricingPackage.TrainerId != trainerId)
+        if (pricingPackage.TrainerId
+            != trainerId)
+        {
             throw new InvalidOperationException(
-                "The selected pricing package does not belong to this trainer.");
+                "Izabrani paket ne pripada ovom treneru.");
+        }
 
-        Collaboration collaboration = new Collaboration(
-            0,
-            trainerId,
-            request.ClientId,
-            request.Id,
-            pricingPackage.Id,
-            DateTime.Today,
-            null,
-            CollaborationStatus.Active,
-            pricingPackage.WorkoutsPerWeek,
-            pricingPackage.MonthlyPrice
-        );
+        Collaboration collaboration =
+            new Collaboration(
+                0,
+                trainerId,
+                request.ClientId,
+                request.Id,
+                pricingPackage.Id,
+                DateTime.Today,
+                null,
+                CollaborationStatus.Active,
+                pricingPackage.WorkoutsPerWeek,
+                pricingPackage.MonthlyPrice);
 
         long collaborationId =
-            _collaborationRepository.Insert(collaboration);
+            _collaborationRepository
+                .Insert(collaboration);
 
-        request.Status = RequestStatus.Approved;
+        request.Status =
+            RequestStatus.Approved;
+
         _requestRepository.Update(request);
 
-        SendDecisionMessage(
+        TrySendDecisionMessage(
             request.ClientId,
             trainerId,
-            "Vaš zahtev za saradnju je prihvaćen.");
+            requestApproved: true);
 
         return collaborationId;
     }
 
-    public void RejectRequest(long requestId, long trainerId)
+    public void RejectRequest(
+        long requestId,
+        long trainerId)
     {
         CollaborationRequest request =
-            GetPendingRequestForTrainer(requestId, trainerId);
+            GetPendingRequestForTrainer(
+                requestId,
+                trainerId);
 
-        request.Status = RequestStatus.Rejected;
+        request.Status =
+            RequestStatus.Rejected;
+
         _requestRepository.Update(request);
 
-        SendDecisionMessage(
+        TrySendDecisionMessage(
             request.ClientId,
             trainerId,
-            "Vaš zahtev za saradnju je odbijen.");
+            requestApproved: false);
     }
 
     private void EnsureClientAndTrainerExist(
         long clientId,
         long trainerId)
     {
-        if (_clientRepository.GetById(clientId) is null)
+        if (_clientRepository.GetById(clientId)
+            is null)
+        {
             throw new InvalidOperationException(
-                $"Client with ID {clientId} does not exist.");
+                "Klijent ne postoji.");
+        }
 
-        if (_trainerRepository.GetById(trainerId) is null)
+        if (_trainerRepository.GetById(trainerId)
+            is null)
+        {
             throw new InvalidOperationException(
-                $"Trainer with ID {trainerId} does not exist.");
+                "Trener ne postoji.");
+        }
     }
 
-    private CollaborationRequest GetPendingRequestForTrainer(
-        long requestId,
-        long trainerId)
+    private CollaborationRequest
+        GetPendingRequestForTrainer(
+            long requestId,
+            long trainerId)
     {
         CollaborationRequest? request =
             _requestRepository.GetById(requestId);
 
         if (request is null)
+        {
             throw new InvalidOperationException(
-                $"Collaboration request with ID {requestId} does not exist.");
+                "Zahtev ne postoji.");
+        }
 
         if (request.TrainerId != trainerId)
+        {
             throw new InvalidOperationException(
-                "The request does not belong to this trainer.");
+                "Zahtev ne pripada ovom treneru.");
+        }
 
-        if (request.Status != RequestStatus.Pending)
+        if (request.Status
+            != RequestStatus.Pending)
+        {
             throw new InvalidOperationException(
-                "Only pending requests can be processed.");
+                "Samo zahtev na čekanju može biti obrađen.");
+        }
 
         return request;
     }
 
-    private void SendDecisionMessage(
+    private void TrySendDecisionMessage(
         long clientId,
         long trainerId,
-        string content)
+        bool requestApproved)
     {
-        Trainer trainer = _trainerRepository.GetById(trainerId)
-            ?? throw new InvalidOperationException(
-                "Trainer was not found.");
+        try
+        {
+            Trainer trainer =
+                _trainerRepository.GetById(trainerId)
+                ?? throw new InvalidOperationException(
+                    "Trener ne postoji.");
 
-        Client client = _clientRepository.GetById(clientId)
-            ?? throw new InvalidOperationException(
-                "Client was not found.");
+            Client client =
+                _clientRepository.GetById(clientId)
+                ?? throw new InvalidOperationException(
+                    "Klijent ne postoji.");
 
-        _messageService.SendMessage(
-            trainer.AccountId,
-            client.AccountId,
-            content);
-    }
-    public List<Trainer> GetAvailableTrainers(long clientId)
-    {
-        if (_clientRepository.GetById(clientId) is null)
-            throw new InvalidOperationException("Klijent ne postoji.");
-        return _trainerRepository.GetApprovedTrainers();
+            string content = requestApproved
+                ? $"Vaš zahtev za saradnju sa trenerom {trainer.FirstName} {trainer.LastName} je prihvaćen."
+                : $"Vaš zahtev za saradnju sa trenerom {trainer.FirstName} {trainer.LastName} je odbijen.";
+
+            _messageService.SendMessage(
+                trainer.AccountId,
+                client.AccountId,
+                content);
+        }
+        catch (Exception exception)
+        {
+            // Odluka je već sačuvana. Greška u slanju
+            // poruke ne sme da vrati zahtev u pogrešno stanje
+            // niti da korisniku prikaže NullReferenceException.
+            Console.Error.WriteLine(
+                "Zahtev je obrađen, ali poruka nije poslata:");
+            Console.Error.WriteLine(exception);
+        }
     }
 }

@@ -19,6 +19,24 @@
                     FontSize="16"
                     Background="DarkRed"
                     Foreground="White"/>
+            <Button Content="Zahtevi za saradnju"
+                    Width="250"
+                    Height="50"
+                    Click="OnRequestsClick"
+                    FontSize="16"/>
+
+            <Button Content="Moje vežbe"
+                    Width="250"
+                    Height="50"
+                    Click="OnExercisesClick"
+                    FontSize="16"/>
+
+            <Button Content="Kreiraj trening"
+                    Width="250"
+                    Height="50"
+                    Click="OnCreateWorkoutClick"
+                    FontSize="16"/>
+
 
         </StackPanel>
     </Grid>
