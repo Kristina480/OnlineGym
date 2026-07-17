@@ -27,7 +27,73 @@ public partial class TrainerWindow : Window
     {
         trainer = null;
         this.Close();
-        var loginWindow = new LoginWindow();
-        loginWindow.Show();
+        // var loginWindow = new LoginWindow();
+        // loginWindow.Show();
+        var mainWindow = new MainWindow();
+        mainWindow.Show();
     }
+    
+    private void OnRequestsClick(
+        object? sender,
+        RoutedEventArgs e)
+    {
+        if (trainer is null)
+            return;
+
+        CollaborationRequestsWindow window =
+            new CollaborationRequestsWindow(trainer.TrainerId);
+
+        Hide();
+
+        window.Closed += (_, _) =>
+        {
+            Show();
+            Activate();
+        };
+
+        window.Show();
+    }
+
+    private void OnExercisesClick(
+        object? sender,
+        RoutedEventArgs e)
+    {
+        if (trainer is null)
+            return;
+
+        ExerciseManagementWindow window =
+            new ExerciseManagementWindow(trainer.TrainerId);
+
+        Hide();
+
+        window.Closed += (_, _) =>
+        {
+            Show();
+            Activate();
+        };
+
+        window.Show();
+    }
+
+    private void OnCreateWorkoutClick(
+        object? sender,
+        RoutedEventArgs e)
+    {
+        if (trainer is null)
+            return;
+
+        CreateWorkoutWindow window =
+            new CreateWorkoutWindow(trainer.TrainerId);
+
+        Hide();
+
+        window.Closed += (_, _) =>
+        {
+            Show();
+            Activate();
+        };
+
+        window.Show();
+    }
+
 }

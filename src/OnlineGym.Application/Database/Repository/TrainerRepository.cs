@@ -174,4 +174,28 @@ public class TrainerRepository:ITrainerRepository
                 : reader.GetString(recommendationsIndex)
         );
     }
+    public List<Trainer> GetApprovedTrainers()
+    {
+        List<Trainer> trainers = new();
+        using IDbConnection connection = PostgresConnection.CreateConnection();
+        IDbCommand command = connection.CreateCommand();
+        command.CommandText = @"
+        SELECT DISTINCT
+            t.trainer_id,
+            t.account_id,
+            t.first_name,
+            t.last_name,
+            t.specialization,
+            t.average_rating,
+            t.education,
+            t.recommendations
+        FROM trainers t
+        INNER JOIN registration_requests rr
+            ON rr.trainer_id = t.trainer_id
+        WHERE rr.status = 'APPROVED'
+        ORDER BY t.first_name, t.last_name;";
+        using IDataReader reader = command.ExecuteReader();
+        while (reader.Read()) trainers.Add(MapFromReader(reader));
+        return trainers;
+    }
 }

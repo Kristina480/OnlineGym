@@ -1,0 +1,73 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:dg="using:Avalonia.Controls"
+        x:Class="OnlineGym.Uix.Views.TrainerBrowserWindow"
+        x:CompileBindings="False"
+        Width="900"
+        Height="600"
+        MinWidth="760"
+        MinHeight="500"
+        Title="Pregled trenera"
+        WindowStartupLocation="CenterScreen">
+
+    <Window.Styles>
+        <Style Selector="Button">
+            <Setter Property="Padding" Value="16,9"/>
+            <Setter Property="CornerRadius" Value="7"/>
+        </Style>
+        <Style Selector="DataGridColumnHeader">
+            <Setter Property="Background" Value="#E9EDF4"/>
+            <Setter Property="Foreground" Value="#1F2937"/>
+        </Style>
+    </Window.Styles>
+
+    <Grid Margin="26" RowDefinitions="Auto,Auto,*,Auto">
+        <StackPanel Grid.Row="0" Spacing="5">
+            <TextBlock Text="Pregled trenera"
+                       FontSize="28"
+                       FontWeight="Bold"/>
+            <TextBlock Text="Izaberite trenera kojem želite da pošaljete zahtev za saradnju."
+                       Foreground="#667085"/>
+        </StackPanel>
+
+        <Border Grid.Row="1"
+                Height="1"
+                Background="#D8DEE8"
+                Margin="0,18"/>
+
+        <dg:DataGrid Grid.Row="2"
+                     x:Name="TrainersDataGrid"
+                     AutoGenerateColumns="False"
+                     IsReadOnly="True"
+                     SelectionMode="Single"
+                     GridLinesVisibility="Horizontal"
+                     Background="White">
+            <dg:DataGrid.Columns>
+                <dg:DataGridTextColumn Header="Ime" Binding="{Binding FirstName}" Width="*"/>
+                <dg:DataGridTextColumn Header="Prezime" Binding="{Binding LastName}" Width="*"/>
+                <dg:DataGridTextColumn Header="Specijalnost" Binding="{Binding Specialization}" Width="1.3*"/>
+                <dg:DataGridTextColumn Header="Prosečna ocena" Binding="{Binding AverageRating, StringFormat={}{0:F2}}" Width="*"/>
+                <dg:DataGridTextColumn Header="Obrazovanje" Binding="{Binding Education}" Width="1.2*"/>
+            </dg:DataGrid.Columns>
+        </dg:DataGrid>
+
+        <Grid Grid.Row="3"
+              ColumnDefinitions="*,Auto,Auto"
+              ColumnSpacing="12"
+              Margin="0,18,0,0">
+            <TextBlock Grid.Column="0"
+                       x:Name="MessageTextBlock"
+                       VerticalAlignment="Center"
+                       TextWrapping="Wrap"/>
+            <Button Grid.Column="1"
+                    Content="Nazad"
+                    Width="120"
+                    Click="OnCloseClick"/>
+            <Button Grid.Column="2"
+                    x:Name="SendRequestButton"
+                    Content="Pošalji zahtev"
+                    Width="165"
+                    Click="OnSendClick"/>
+        </Grid>
+    </Grid>
+</Window>

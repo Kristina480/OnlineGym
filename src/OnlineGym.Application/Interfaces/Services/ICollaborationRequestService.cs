@@ -14,4 +14,6 @@ public interface ICollaborationRequestService
         long pricingPackageId);
 
     void RejectRequest(long requestId, long trainerId);
+    
+    List<Trainer> GetAvailableTrainers(long clientId);
 }

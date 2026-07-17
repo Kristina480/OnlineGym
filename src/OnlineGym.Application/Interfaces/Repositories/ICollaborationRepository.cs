@@ -15,4 +15,5 @@ public interface ICollaborationRepository
     bool HasActiveCollaboration(
         long clientId,
         long trainerId);
+    List<Collaboration> GetActiveByTrainerId(long trainerId);
 }

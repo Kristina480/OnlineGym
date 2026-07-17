@@ -117,6 +117,22 @@ public class CollaborationRepository: ICollaborationRepository
             reader.GetDecimal(reader.GetOrdinal("monthly_price"))
         );
     }
-    
+    public List<Collaboration> GetActiveByTrainerId(long trainerId)
+    {
+        List<Collaboration> collaborations = new();
+        using IDbConnection connection = PostgresConnection.CreateConnection();
+        IDbCommand command = connection.CreateCommand();
+        command.CommandText = @"
+        SELECT collaboration_id, trainer_id, client_id, request_id, pricing_package_id,
+               start_date, end_date, status, workouts_per_week, monthly_price
+        FROM collaborations
+        WHERE trainer_id = @trainer_id
+          AND status = 'ACTIVE'::collaboration_status_enum
+        ORDER BY start_date DESC;";
+        DataBaseHelper.AddParameter(command, "@trainer_id", trainerId);
+        using IDataReader reader = command.ExecuteReader();
+        while (reader.Read()) collaborations.Add(MapFromReader(reader));
+        return collaborations;
+    }
 
 }
