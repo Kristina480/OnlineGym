@@ -2,7 +2,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         x:Class="OnlineGym.Uix.Views.TrainerWindow"
         Width="500"
-        Height="400"
+        Height="560"
         Title="Trener"
         WindowStartupLocation="CenterScreen">
 
@@ -31,13 +31,12 @@
                     Click="OnMachinesClick"
                     FontSize="16"/>
 
-            <Button Content="Odjava"
+            <Button Content="Upravljanje rekvizitima"
                     Width="250"
                     Height="50"
-                    Click="OnLogoutClick"
-                    FontSize="16"
-                    Background="DarkRed"
-                    Foreground="White"/>
+                    Click="OnEquipmentClick"
+                    FontSize="16"/>
+
             <Button Content="Zahtevi za saradnju"
                     Width="250"
                     Height="50"
@@ -56,8 +55,14 @@
                     Click="OnCreateWorkoutClick"
                     FontSize="16"/>
 
+            <Button Content="Odjava"
+                    Width="250"
+                    Height="50"
+                    Click="OnLogoutClick"
+                    FontSize="16"
+                    Background="DarkRed"
+                    Foreground="White"/>
 
         </StackPanel>
     </Grid>
-
 </Window>

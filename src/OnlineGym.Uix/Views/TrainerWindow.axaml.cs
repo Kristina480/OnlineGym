@@ -1,7 +1,5 @@
-﻿using System;
-using Avalonia.Controls;
+﻿using Avalonia.Controls;
 using Avalonia.Interactivity;
-using Avalonia.Markup.Xaml;
 using OnlineGym.Application.Database.Repositories;
 using OnlineGym.Application.Domain;
 
@@ -9,7 +7,8 @@ namespace OnlineGym.Uix.Views;
 
 public partial class TrainerWindow : Window
 {
-    private readonly TrainerRepository _trainerRepository = new();
+    private readonly TrainerRepository _trainerRepository =
+        new();
 
     public Trainer? Trainer { get; private set; }
 
@@ -17,7 +16,10 @@ public partial class TrainerWindow : Window
     {
         InitializeComponent();
 
-        Trainer = _trainerRepository.GetTrainerByAccountId(accountId);
+        Trainer =
+            _trainerRepository.GetTrainerByAccountId(
+                accountId
+            );
     }
 
     private void OnMachinesClick(
@@ -25,30 +27,45 @@ public partial class TrainerWindow : Window
         RoutedEventArgs e)
     {
         MachinesWindow machinesWindow = new();
+
         machinesWindow.ShowDialog(this);
     }
 
-    private void OnLogoutClick(
+    private void OnEquipmentClick(
         object? sender,
         RoutedEventArgs e)
     {
-        Trainer = null;
-        Close();
+        EquipmentWindow equipmentWindow = new();
 
-        LoginWindow loginWindow = new();
-        loginWindow.Show();
+        equipmentWindow.ShowDialog(this);
     }
-    
+
+    private void OnRequestsClick(
+        object? sender,
+        RoutedEventArgs e)
+    {
+        if (Trainer is null)
+        {
+            return;
+        }
+
+        CollaborationRequestsWindow requestsWindow =
+            new(Trainer.TrainerId);
+
+        requestsWindow.ShowDialog(this);
+    }
 
     private void OnExercisesClick(
         object? sender,
         RoutedEventArgs e)
     {
         if (Trainer is null)
+        {
             return;
+        }
 
         ExerciseManagementWindow window =
-            new ExerciseManagementWindow(Trainer.TrainerId);
+            new(Trainer.TrainerId);
 
         Hide();
 
@@ -66,10 +83,12 @@ public partial class TrainerWindow : Window
         RoutedEventArgs e)
     {
         if (Trainer is null)
+        {
             return;
+        }
 
         CreateWorkoutWindow window =
-            new CreateWorkoutWindow(Trainer.TrainerId);
+            new(Trainer.TrainerId);
 
         Hide();
 
@@ -81,19 +100,16 @@ public partial class TrainerWindow : Window
 
         window.Show();
     }
-    private void OnRequestsClick(
+
+    private void OnLogoutClick(
         object? sender,
         RoutedEventArgs e)
     {
-        if (Trainer is null)
-        {
-            return;
-        }
+        Trainer = null;
 
-        CollaborationRequestsWindow requestsWindow =
-            new(Trainer.TrainerId);
+        Close();
 
-        requestsWindow.ShowDialog(this);
+        LoginWindow loginWindow = new();
+        loginWindow.Show();
     }
-
 }
