@@ -55,11 +55,21 @@ public class RegistrationRequestRepository
     {
         IDbConnection connection=PostgresConnection.CreateConnection();
         IDbCommand command=connection.CreateCommand();
-        command.CommandText = @"UPDATE registration_request SET status=@status WHERE trainer_id=@trainerId";
+        command.CommandText = @"UPDATE registration_requests SET status=@status::request_status_enum WHERE trainer_id=@trainerId";
         AddParameter(command, "trainerId", trainerId);
         AddParameter(command, "status", status);
         
         int result = command.ExecuteNonQuery();
+        return result > 0;
+    }
+
+    public bool HasLicense(long trainerId)
+    {
+        IDbConnection connection=PostgresConnection.CreateConnection();
+        IDbCommand command=connection.CreateCommand();
+        command.CommandText = @"SELECT COUNT(*) FROM licenses where trainer_id=@trainerId";
+        AddParameter(command, "trainerId", trainerId);
+        long result = Convert.ToInt64(command.ExecuteScalar());
         return result > 0;
     }
     private void AddParameter(IDbCommand command, string paramName, object value)

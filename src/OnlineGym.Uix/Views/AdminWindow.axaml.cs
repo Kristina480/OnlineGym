@@ -67,15 +67,22 @@ public partial class AdminWindow : Window
         var listBox = this.FindControl<ListBox>("PendingTrainersListBox");
         if (listBox?.SelectedItem is Trainer selectedTrainer)
         {
-            bool success = requestRepo.UpdateStatus(selectedTrainer.TrainerId, "APPROVED");
-            if (success)
+            if (requestRepo.HasLicense(selectedTrainer.TrainerId))
             {
-                ShowStatus($"Trener {selectedTrainer.FirstName} {selectedTrainer.LastName} je ODOBREN!");
-                LoadAllData();
+                bool success = requestRepo.UpdateStatus(selectedTrainer.TrainerId, "APPROVED");
+                if (success)
+                {
+                    ShowStatus($"Trener {selectedTrainer.FirstName} {selectedTrainer.LastName} je ODOBREN!");
+                    LoadAllData();
+                }
+                else
+                {
+                    ShowStatus("Greska pri odobravanju.");
+                }
             }
             else
             {
-                ShowStatus("Greska pri odobravanju.");
+                ShowStatus("Ovaj trener nema licencu, ne mozete ga odobriti.");
             }
         }
         else
@@ -146,4 +153,5 @@ public partial class AdminWindow : Window
         var loginWindow = new LoginWindow();
         loginWindow.Show();
     }
+    
 }
