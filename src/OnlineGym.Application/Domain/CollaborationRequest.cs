@@ -13,6 +13,7 @@ public class CollaborationRequest
     public DateTime RequestDate { get; private set; }
 
     public RequestStatus Status { get; set; }
+    public string ClientName { get; set; } = string.Empty;
 
     public CollaborationRequest(
         long id,

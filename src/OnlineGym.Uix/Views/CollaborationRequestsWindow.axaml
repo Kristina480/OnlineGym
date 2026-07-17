@@ -1,0 +1,105 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:dg="using:Avalonia.Controls"
+        x:Class="OnlineGym.Uix.Views.CollaborationRequestsWindow"
+        x:CompileBindings="False"
+        Width="920"
+        Height="620"
+        MinWidth="780"
+        MinHeight="520"
+        Title="Zahtevi za saradnju"
+        WindowStartupLocation="CenterScreen">
+
+    <Window.Styles>
+        <Style Selector="Button">
+            <Setter Property="Padding" Value="16,9"/>
+            <Setter Property="CornerRadius" Value="7"/>
+        </Style>
+        <Style Selector="DataGridColumnHeader">
+            <Setter Property="Background" Value="#E9EDF4"/>
+            <Setter Property="Foreground" Value="#1F2937"/>
+        </Style>
+    </Window.Styles>
+
+    <Grid Margin="26" RowDefinitions="Auto,Auto,*,Auto,Auto">
+        <StackPanel Grid.Row="0" Spacing="5">
+            <TextBlock Text="Zahtevi za saradnju"
+                       FontSize="28"
+                       FontWeight="Bold"/>
+            <TextBlock Text="Izaberite zahtev, zatim paket cena i donesite odluku."
+                       Foreground="#667085"/>
+        </StackPanel>
+
+        <Border Grid.Row="1"
+                Height="1"
+                Background="#D8DEE8"
+                Margin="0,18"/>
+
+        <dg:DataGrid Grid.Row="2"
+                     x:Name="RequestsDataGrid"
+                     AutoGenerateColumns="False"
+                     IsReadOnly="True"
+                     SelectionMode="Single"
+                     GridLinesVisibility="Horizontal"
+                     Background="White">
+            <dg:DataGrid.Columns>
+                <dg:DataGridTextColumn Header="Klijent" Binding="{Binding ClientName}" Width="2*"/>
+                <dg:DataGridTextColumn Header="Datum" Binding="{Binding RequestDate, StringFormat={}{0:dd.MM.yyyy.}}" Width="1.3*"/>
+                <dg:DataGridTextColumn Header="Status" Binding="{Binding Status}" Width="*"/>
+            </dg:DataGrid.Columns>
+        </dg:DataGrid>
+
+        <Border Grid.Row="3"
+                Margin="0,16,0,0"
+                Padding="14"
+                CornerRadius="8"
+                Background="#F4F6F9">
+            <Grid ColumnDefinitions="Auto,*,Auto,Auto" ColumnSpacing="12">
+                <TextBlock Grid.Column="0"
+                           Text="Paket cena:"
+                           VerticalAlignment="Center"
+                           FontWeight="SemiBold"/>
+                <ComboBox Grid.Column="1"
+                          x:Name="PricingPackageComboBox"
+                          MinWidth="280">
+                    <ComboBox.ItemTemplate>
+                        <DataTemplate>
+                            <StackPanel Orientation="Horizontal" Spacing="6">
+                                <TextBlock Text="{Binding WorkoutsPerWeek}"/>
+                                <TextBlock Text="treninga nedeljno —"/>
+                                <TextBlock Text="{Binding MonthlyPrice}"/>
+                                <TextBlock Text="RSD"/>
+                            </StackPanel>
+                        </DataTemplate>
+                    </ComboBox.ItemTemplate>
+                </ComboBox>
+                <Button Grid.Column="2"
+                        x:Name="RejectButton"
+                        Content="Odbij"
+                        Width="110"
+                        Background="DarkRed"
+                        Foreground="White"
+                        Click="OnRejectClick"/>
+                <Button Grid.Column="3"
+                        x:Name="ApproveButton"
+                        Content="Prihvati"
+                        Width="115"
+                        Click="OnApproveClick"/>
+            </Grid>
+        </Border>
+
+        <Grid Grid.Row="4"
+              ColumnDefinitions="Auto,*"
+              Margin="0,16,0,0">
+            <Button Grid.Column="0"
+                    Content="Nazad"
+                    Width="120"
+                    Click="OnCloseClick"/>
+            <TextBlock Grid.Column="1"
+                       x:Name="MessageTextBlock"
+                       Margin="18,0,0,0"
+                       VerticalAlignment="Center"
+                       TextWrapping="Wrap"/>
+        </Grid>
+    </Grid>
+</Window>

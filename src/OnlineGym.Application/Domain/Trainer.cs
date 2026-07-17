@@ -23,4 +23,5 @@ public class Trainer
         Education = education;
         Recommendations = recommendations;
     }
+    
 }

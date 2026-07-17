@@ -1,0 +1,134 @@
+﻿<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        x:Class="OnlineGym.Uix.Views.AdminWindow"
+        x:CompileBindings="False"
+        Width="950"
+        Height="650"
+        Title="Admin">
+
+    <Grid Margin="20" RowDefinitions="Auto,Auto,*,Auto">
+
+        <TextBlock Grid.Row="0"
+                   Text="Admin Panel"
+                   FontSize="24"
+                   FontWeight="Bold"
+                   HorizontalAlignment="Center"
+                   Margin="0,0,0,20"/>
+
+        <Button Grid.Row="1"
+                Content="Odjava"
+                HorizontalAlignment="Right"
+                Click="OnLogoutClick"
+                Width="100"
+                Height="30"
+                Background="DarkRed"
+                Foreground="White"/>
+
+        <Grid Grid.Row="2" ColumnDefinitions="*,*" Margin="0,10,0,0">
+            <Grid Grid.Column="0" Margin="0,0,10,0">
+                <Grid RowDefinitions="Auto,*,Auto">
+
+                    <TextBlock Grid.Row="0"
+                               Text="Aktivni treneri"
+                               FontSize="16"
+                               FontWeight="Bold"
+                               Margin="0,0,0,10"/>
+
+                    <ListBox Grid.Row="1" Name="ApprovedTrainersListBox">
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <Border BorderBrush="LightGray" BorderThickness="0,0,0,1" Padding="6">
+                                    <StackPanel>
+                                        <StackPanel Orientation="Horizontal" Spacing="6">
+                                            <TextBlock Text="{Binding FirstName}" FontWeight="Bold"/>
+                                            <TextBlock Text="{Binding LastName}" FontWeight="Bold"/>
+                                        </StackPanel>
+                                        <TextBlock Text="{Binding Specialization, StringFormat='Specijalizacija: {0}'}"/>
+                                        <TextBlock Text="{Binding Education, StringFormat='Obrazovanje: {0}'}"/>
+                                        <TextBlock Text="{Binding AverageRating, StringFormat='Ocena: {0:0.0}'}"/>
+                                        <TextBlock Text="{Binding Recommendations, StringFormat='Preporuke: {0}'}"/>
+                                    </StackPanel>
+                                </Border>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+
+                    <Button Grid.Row="2"
+                            Content="Izbaci trenera"
+                            Click="OnDeleteTrainerClick"
+                            Background="DarkRed"
+                            Foreground="White"
+                            Margin="0,10,0,0"
+                            Height="35"/>
+
+                </Grid>
+            </Grid>
+            <Grid Grid.Column="1" Margin="10,0,0,0">
+                <Grid RowDefinitions="Auto,*,Auto">
+
+                    <TextBlock Grid.Row="0"
+                               Text="Neregistrovani treneri"
+                               FontSize="16"
+                               FontWeight="Bold"
+                               Margin="0,0,0,10"/>
+
+                    <ListBox Grid.Row="1" Name="PendingTrainersListBox">
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <Border BorderBrush="LightGray" BorderThickness="0,0,0,1" Padding="6">
+                                    <StackPanel>
+                                        <StackPanel Orientation="Horizontal" Spacing="6">
+                                            <TextBlock Text="{Binding FirstName}" FontWeight="Bold"/>
+                                            <TextBlock Text="{Binding LastName}" FontWeight="Bold"/>
+                                        </StackPanel>
+                                        <TextBlock Text="{Binding Specialization, StringFormat='Specijalizacija: {0}'}"/>
+                                        <TextBlock Text="{Binding Education, StringFormat='Obrazovanje: {0}'}"/>
+                                        <TextBlock Text="{Binding AverageRating, StringFormat='Ocena: {0:0.0}'}"/>
+                                        <TextBlock Text="{Binding Recommendations, StringFormat='Preporuke: {0}'}"/>
+                                    </StackPanel>
+                                </Border>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+
+                    <StackPanel Grid.Row="2"
+                                Orientation="Horizontal"
+                                Spacing="10"
+                                Margin="0,10,0,0"
+                                HorizontalAlignment="Center">
+
+                        <Button Content="Odobri"
+                                Click="OnApproveClick"
+                                Background="Green"
+                                Foreground="White"
+                                Width="120"
+                                Height="35"/>
+
+                        <Button Content="Odbij"
+                                Click="OnRejectClick"
+                                Background="DarkRed"
+                                Foreground="White"
+                                Width="120"
+                                Height="35"/>
+
+                        <Button Content="Osvezi"
+                                Click="OnRefreshClick"
+                                Width="100"
+                                Height="35"/>
+
+                    </StackPanel>
+
+                </Grid>
+            </Grid>
+
+        </Grid>
+
+        <TextBlock Grid.Row="3"
+                   Name="StatusText"
+                   HorizontalAlignment="Center"
+                   Margin="0,15,0,0"
+                   Foreground="Green"/>
+
+    </Grid>
+
+</Window>
