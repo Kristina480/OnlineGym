@@ -3,15 +3,34 @@
         x:Class="OnlineGym.Uix.Views.TrainerWindow"
         Width="500"
         Height="400"
-        Title="Client Dashboard">
+        Title="Trener"
+        WindowStartupLocation="CenterScreen">
 
-    <Grid Margin="20" RowDefinitions="Auto,Auto,Auto,*">
-        <Border Grid.Row="1" 
-                BorderBrush="Gray" 
-                BorderThickness="0,1,0,0" 
+    <Grid Margin="20"
+          RowDefinitions="Auto,Auto,*">
+
+        <TextBlock Grid.Row="0"
+                   Text="Trener"
+                   FontSize="26"
+                   FontWeight="Bold"
+                   HorizontalAlignment="Center"
+                   Margin="0,10,0,25"/>
+
+        <Border Grid.Row="1"
+                BorderBrush="Gray"
+                BorderThickness="0,1,0,0"
                 Margin="0,0,0,20"/>
 
-        <StackPanel Grid.Row="2" Spacing="15" HorizontalAlignment="Center">
+        <StackPanel Grid.Row="2"
+                    Spacing="15"
+                    HorizontalAlignment="Center">
+
+            <Button Content="Upravljanje spravama"
+                    Width="250"
+                    Height="50"
+                    Click="OnMachinesClick"
+                    FontSize="16"/>
+
             <Button Content="Odjava"
                     Width="250"
                     Height="50"
@@ -19,6 +38,24 @@
                     FontSize="16"
                     Background="DarkRed"
                     Foreground="White"/>
+            <Button Content="Zahtevi za saradnju"
+                    Width="250"
+                    Height="50"
+                    Click="OnRequestsClick"
+                    FontSize="16"/>
+
+            <Button Content="Moje vežbe"
+                    Width="250"
+                    Height="50"
+                    Click="OnExercisesClick"
+                    FontSize="16"/>
+
+            <Button Content="Kreiraj trening"
+                    Width="250"
+                    Height="50"
+                    Click="OnCreateWorkoutClick"
+                    FontSize="16"/>
+
 
         </StackPanel>
     </Grid>

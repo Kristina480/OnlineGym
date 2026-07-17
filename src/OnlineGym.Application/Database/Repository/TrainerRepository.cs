@@ -81,8 +81,6 @@ public class TrainerRepository:ITrainerRepository
 
         command.ExecuteNonQuery();
     }
-    // OnlineGym.Application.Database.Repositories.TrainerRepository.cs
-
     public Trainer? GetTrainerByAccountId(long accountId)
     {
         using IDbConnection connection = PostgresConnection.CreateConnection();
@@ -117,6 +115,26 @@ public class TrainerRepository:ITrainerRepository
             return null;
         }
         return result.ToString();
+    }
+    public bool DeleteTrainer(long trainerId)
+    {
+        using IDbConnection connection = PostgresConnection.CreateConnection();
+        IDbCommand command = connection.CreateCommand();
+        command.CommandText = "DELETE FROM trainers WHERE trainer_id = @trainer_id";
+        AddParameter(command, "trainer_id", trainerId);
+    
+        int result = command.ExecuteNonQuery();
+        return result > 0;
+    }
+    public bool DeleteTrainerAccount(long accountId)
+    {
+        using IDbConnection connection = PostgresConnection.CreateConnection();
+        IDbCommand command = connection.CreateCommand();
+        command.CommandText = "DELETE FROM user_accounts WHERE account_id = @account_id";
+        AddParameter(command, "account_id", accountId);
+    
+        int result = command.ExecuteNonQuery();
+        return result > 0;
     }
 
     private void AddParameter(IDbCommand command, string paramName, object value)
@@ -173,5 +191,29 @@ public class TrainerRepository:ITrainerRepository
                 ? null
                 : reader.GetString(recommendationsIndex)
         );
+    }
+    public List<Trainer> GetApprovedTrainers()
+    {
+        List<Trainer> trainers = new();
+        using IDbConnection connection = PostgresConnection.CreateConnection();
+        IDbCommand command = connection.CreateCommand();
+        command.CommandText = @"
+        SELECT DISTINCT
+            t.trainer_id,
+            t.account_id,
+            t.first_name,
+            t.last_name,
+            t.specialization,
+            t.average_rating,
+            t.education,
+            t.recommendations
+        FROM trainers t
+        INNER JOIN registration_requests rr
+            ON rr.trainer_id = t.trainer_id
+        WHERE rr.status = 'APPROVED'
+        ORDER BY t.first_name, t.last_name;";
+        using IDataReader reader = command.ExecuteReader();
+        while (reader.Read()) trainers.Add(MapFromReader(reader));
+        return trainers;
     }
 }

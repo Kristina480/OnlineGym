@@ -1,0 +1,45 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="clr-namespace:OnlineGym.Uix.ViewModels"
+        x:Class="OnlineGym.Uix.Views.RateWorkoutItemsWindow"
+        x:DataType="vm:RateWorkoutItemsViewModel"
+        x:CompileBindings="False"
+        Width="500" Height="500"
+        Title="Ocenjivanje vezbi">
+
+    <Grid Margin="20" RowDefinitions="Auto,Auto,*">
+        <StackPanel Grid.Row="0" Orientation="Horizontal" Spacing="10">
+            <TextBlock Text="ID treninga:" VerticalAlignment="Center"/>
+            <NumericUpDown Value="{Binding WorkoutId}" Minimum="0" Width="140"/>
+            <Button Content="Ucitaj vezbe" Command="{Binding LoadItemsCommand}"/>
+        </StackPanel>
+
+        <TextBlock Grid.Row="1" Text="{Binding StatusMessage}" Foreground="Red" Margin="0,10,0,0"/>
+
+        <ScrollViewer Grid.Row="2" Margin="0,10,0,0">
+            <ItemsControl ItemsSource="{Binding Items}">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate x:DataType="vm:WorkoutItemViewModel">
+                        <Border BorderBrush="Gray" BorderThickness="0,0,0,1" Padding="0,10">
+                            <StackPanel Spacing="5">
+                                <TextBlock Text="{Binding ExerciseName}" FontWeight="Bold"/>
+                                <TextBlock Text="{Binding CompletedStatusText}"/>
+
+                                <StackPanel Orientation="Horizontal" Spacing="10">
+                                    <TextBlock Text="Ocena (1-5):" VerticalAlignment="Center"/>
+                                    <NumericUpDown Value="{Binding Rating}" Minimum="1" Maximum="5" Width="120"/>
+                                </StackPanel>
+
+                                <TextBox Text="{Binding Comment}" Watermark="Komentar"/>
+
+                                <Button Content="Sacuvaj ocenu" Command="{Binding SaveRatingCommand}"/>
+
+                                <TextBlock Text="{Binding StatusMessage}" Foreground="Green"/>
+                            </StackPanel>
+                        </Border>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </ScrollViewer>
+    </Grid>
+</Window>
