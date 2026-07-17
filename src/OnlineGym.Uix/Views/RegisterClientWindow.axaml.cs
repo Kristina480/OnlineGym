@@ -70,7 +70,9 @@ public partial class RegisterClientWindow : Window
         }
         repository.RegisterClient(username, password, first, last, height, weight, goal, health, workouts);
         Console.WriteLine("Uspesna registracija!");
-        this.Close();
+        LoginWindow loginWindow = new LoginWindow();
+        loginWindow.Show();
+        this.Hide();
     }
 
 }

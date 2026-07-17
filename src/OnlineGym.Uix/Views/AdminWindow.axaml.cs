@@ -117,7 +117,8 @@ public partial class AdminWindow : Window
         if (listBox?.SelectedItem is Trainer selectedTrainer)
         {
             bool success = trainerRepo.DeleteTrainer(selectedTrainer.TrainerId);
-            if (success)
+            bool succes2 = trainerRepo.DeleteTrainerAccount(selectedTrainer.AccountId);
+            if (success && succes2)
             {
                 ShowStatus($"Trener {selectedTrainer.FirstName} {selectedTrainer.LastName} je izbacen!");
                 LoadAllData();

@@ -128,6 +128,16 @@ public class TrainerRepository:ITrainerRepository
         int result = command.ExecuteNonQuery();
         return result > 0;
     }
+    public bool DeleteTrainerAccount(long accountId)
+    {
+        using IDbConnection connection = PostgresConnection.CreateConnection();
+        IDbCommand command = connection.CreateCommand();
+        command.CommandText = "DELETE FROM user_accounts WHERE account_id = @account_id";
+        AddParameter(command, "account_id", accountId);
+    
+        int result = command.ExecuteNonQuery();
+        return result > 0;
+    }
 
     private void AddParameter(IDbCommand command, string paramName, object value)
     {
