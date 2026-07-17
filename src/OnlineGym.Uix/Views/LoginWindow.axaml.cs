@@ -66,8 +66,8 @@ public partial class LoginWindow : Window
         }
         else if(userType == "ADMIN")
         {
-            //AdminWindow adminWindow = new AdminWindow();
-            //adminWindow.Show();
+            AdminWindow adminWindow = new AdminWindow();
+            adminWindow.Show();
             this.Hide();
         }
     }
