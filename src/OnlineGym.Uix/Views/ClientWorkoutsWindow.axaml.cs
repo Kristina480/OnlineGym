@@ -90,6 +90,13 @@ public partial class ClientWorkoutsWindow : Window
             return;
         }
 
+        if (selectedWorkout.ScheduledAt > DateTime.Now)
+        {
+            messageText.Text = "Ne možete oceniti trening koji se tek treba održati u budućnosti.";
+            messageText.Foreground = new SolidColorBrush(Colors.DarkRed);
+            return;
+        }
+
         var workoutRatingBox = this.FindControl<TextBox>("WorkoutRatingBox");
         var workoutCommentBox = this.FindControl<TextBox>("WorkoutCommentBox");
 
