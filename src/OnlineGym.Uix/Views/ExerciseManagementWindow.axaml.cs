@@ -4,6 +4,7 @@ using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.Markup.Xaml;
 using Avalonia.Media;
+using OnlineGym.Application.Database.Repositories;
 using OnlineGym.Application.Domain;
 using OnlineGym.Uix.ViewModels;
 
@@ -16,6 +17,8 @@ public partial class ExerciseManagementWindow : Window
     public ExerciseManagementWindow()
     {
         InitializeComponent();
+
+        LoadEquipmentAndMachines();
     }
 
     public ExerciseManagementWindow(long trainerId) : this()
@@ -29,6 +32,15 @@ public partial class ExerciseManagementWindow : Window
     private void InitializeComponent()
     {
         AvaloniaXamlLoader.Load(this);
+    }
+
+    private void LoadEquipmentAndMachines()
+    {
+        GetControl<ComboBox>("EquipmentComboBox").ItemsSource =
+            new EquipmentRepository().GetAll();
+
+        GetControl<ComboBox>("MachineComboBox").ItemsSource =
+            new MachineRepository().GetAll();
     }
 
     private bool LoadExercises(bool showEmptyMessage)
@@ -88,11 +100,11 @@ public partial class ExerciseManagementWindow : Window
         TextBox videoBox =
             GetControl<TextBox>("VideoUrlTextBox");
 
-        TextBox equipmentBox =
-            GetControl<TextBox>("EquipmentIdTextBox");
+        ComboBox equipmentBox =
+            GetControl<ComboBox>("EquipmentComboBox");
 
-        TextBox machineBox =
-            GetControl<TextBox>("MachineIdTextBox");
+        ComboBox machineBox =
+            GetControl<ComboBox>("MachineComboBox");
 
         string name =
             nameBox.Text?.Trim() ?? string.Empty;
@@ -103,17 +115,11 @@ public partial class ExerciseManagementWindow : Window
             return;
         }
 
-        if (!TryParseOptionalId(
-                equipmentBox.Text,
-                out long? equipmentId) ||
-            !TryParseOptionalId(
-                machineBox.Text,
-                out long? machineId))
-        {
-            ShowError(
-                "ID rekvizita i sprave moraju biti pozitivni celi brojevi.");
-            return;
-        }
+        long? equipmentId =
+            (equipmentBox.SelectedItem as Equipment)?.Id;
+
+        long? machineId =
+            (machineBox.SelectedItem as Machine)?.Id;
 
         Button? button = sender as Button;
 
@@ -132,8 +138,8 @@ public partial class ExerciseManagementWindow : Window
 
             nameBox.Text = string.Empty;
             videoBox.Text = string.Empty;
-            equipmentBox.Text = string.Empty;
-            machineBox.Text = string.Empty;
+            equipmentBox.SelectedItem = null;
+            machineBox.SelectedItem = null;
 
             LoadExercises(showEmptyMessage: false);
             ShowSuccess("Vežba je uspešno kreirana.");
@@ -189,27 +195,6 @@ public partial class ExerciseManagementWindow : Window
             if (button is not null)
                 button.IsEnabled = true;
         }
-    }
-
-    private static bool TryParseOptionalId(
-        string? text,
-        out long? id)
-    {
-        if (string.IsNullOrWhiteSpace(text))
-        {
-            id = null;
-            return true;
-        }
-
-        if (long.TryParse(text, out long parsed) &&
-            parsed > 0)
-        {
-            id = parsed;
-            return true;
-        }
-
-        id = null;
-        return false;
     }
 
     private void OnCloseClick(
