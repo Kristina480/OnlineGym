@@ -28,6 +28,14 @@ public partial class TrainerWindow : Window
         machinesWindow.ShowDialog(this);
     }
 
+    private void OnEquipmentClick(
+        object? sender,
+        RoutedEventArgs e)
+    {
+        EquipmentsWindow equipmentsWindow = new();
+        equipmentsWindow.ShowDialog(this);
+    }
+
     private void OnLogoutClick(
         object? sender,
         RoutedEventArgs e)

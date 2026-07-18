@@ -31,6 +31,12 @@
                     Click="OnMachinesClick"
                     FontSize="16"/>
 
+            <Button Content="Upravljanje rekvizitima"
+                    Width="250"
+                    Height="50"
+                    Click="OnEquipmentClick"
+                    FontSize="16"/>
+
             <Button Content="Odjava"
                     Width="250"
                     Height="50"
